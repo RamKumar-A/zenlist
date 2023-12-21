@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 
-const TIME_TO_ADD = 4 * 60 * 60 * 1000;
+// const TIME_TO_ADD = 4 * 60 * 60 * 1000;
 
 function TaskAddInput({ listid, important, list }) {
   const [value, setValue] = useState('');
@@ -17,7 +17,7 @@ function TaskAddInput({ listid, important, list }) {
     return numericValue;
   }
 
-  const currentDate = new Date();
+  // const currentDate = new Date();
 
   // const timeToAdd = TIME_TO_ADD;
 
