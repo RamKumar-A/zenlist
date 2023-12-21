@@ -19,31 +19,30 @@ function TaskAddInput({ listid, important, list }) {
 
   const currentDate = new Date();
 
-  const timeToAdd = TIME_TO_ADD;
+  // const timeToAdd = TIME_TO_ADD;
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    const dueDate = new Date(currentDate.getTime() + timeToAdd);
+    const dueDate = new Date();
     toast.success('Task Added Successfully');
     const taskId = numericTaskId();
 
     // data that going to be used in entire website
+    const locale = 'en-US';
     const newTask = {
       desc: value,
       id: taskId,
       finished: false,
       listId: listid || 1,
       important: important ? true : false,
-      remindDate: format(new Date().toLocaleDateString(), 'dd/M/yyyy'),
-      remindTime: new Date(
-        currentDate.getTime() + timeToAdd
-      ).toLocaleTimeString(),
+      remindDate: format(new Date().toLocaleDateString(locale), 'dd/M/yyyy'),
+      remindTime: new Date().toLocaleTimeString(locale),
       reminder: false,
       notes: '',
       subtasks: [],
-      dueDate: format(new Date().toLocaleDateString(), 'dd/M/yyyy'),
-      dueTime: dueDate.toLocaleTimeString(),
+      dueDate: format(new Date().toLocaleDateString(locale), 'dd/M/yyyy'),
+      dueTime: dueDate.toLocaleTimeString(locale),
     };
 
     if (list) {

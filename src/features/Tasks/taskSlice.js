@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const persistedTask = localStorage.getItem('tasks');
 const persistedImpTask = localStorage.getItem('impTasks');
 const persistedAllTask = localStorage.getItem('allTasks');
+
 const initialState = {
   tasks: persistedTask ? JSON.parse(persistedTask) : [],
   impTask: persistedImpTask ? JSON.parse(persistedImpTask) : [],
@@ -153,14 +154,13 @@ const taskSlice = createSlice({
     },
 
     deleteImpTask(state, action) {
+      localStorage.setItem('tasks', JSON.stringify(state.tasks));
+      localStorage.setItem('impTasks', JSON.stringify(state.impTask));
       return {
         ...state,
         tasks: state.tasks.filter((task) => task.id !== action.payload),
         impTask: state.impTask.filter((task) => task.id !== action.payload),
       };
-
-      // localStorage.setItem('tasks', JSON.stringify(state.tasks));
-      // localStorage.setItem('impTasks', JSON.stringify(state.impTask));
     },
 
     markedImportantTask(state, action) {
