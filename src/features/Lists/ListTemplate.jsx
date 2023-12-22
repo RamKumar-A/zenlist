@@ -94,98 +94,98 @@ function ListTemplate() {
       </header>
 
       <section className="w-full">
-        <DetailsModal>
-          <div className="w-full px-5 flex items-center justify-center gap-4 ">
-            <div className=" w-full h-full bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2">
-              <div className="h-10 bg-blue-700 mx-2 my-3 rounded-full relative sm:h-14 sm:flex items-center justify-center ">
+        <div className="w-full px-5 flex items-center justify-center gap-4 ">
+          <DetailsModal>
+            <div className=" w-full h-full mb-1 bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2">
+              <div className="h-10 bg-blue-700 mx-2 my-2 rounded-full relative top-1 sm:h-14 sm:flex items-center justify-center ">
                 <TaskAddInput list={true} listid={selectedList1?.listId} />
               </div>
               <div className="overflow-y-auto sm:h-[550px] mb-2">
                 <ul className="text-gray-950 dark:text-gray-200 px-5">
                   {selectedList.map((task, i) => (
-                    // <li className="sm:pt-5" key={task.id}>
-                    <li
-                      role="button"
-                      tabIndex={0}
-                      key={task.id}
-                      className={`h-[4.5rem] mb-2 p-2 px-5 shadow-lg border-b border-gray-400 dark:border-gray-900  hover:shadow-gray-800 flex gap-2 items-center justify-between cursor-pointer sm:pt-5 ${
-                        task.finished &&
-                        'bg-gray-300 dark:bg-gray-700 border-none rounded-xl shadow-none'
-                      }`}
-                      onClick={() => handleDetails(task)}
-                    >
-                      <span
-                        className="text-2xl"
-                        onClick={() => handleFinished(task)}
-                      >
-                        {/* Optional Feature but not using now */}
-
-                        {/* <ToolTip content={'Mark as finished'}> */}
-                        {task.finished ? (
-                          <BsCheckCircleFill className="text-green-500" />
-                        ) : (
-                          <BsCircle />
-                        )}
-                        {/* </ToolTip> */}
-                      </span>
-                      <DetailsModal.Open opens="todayTask-open">
-                        <div className="w-full">
-                          <span
-                            className={`sm:text-xl   ${
-                              task.finished && 'line-through '
-                            }`}
-                          >
-                            {task.desc}
-                          </span>
-                          <div className="text-xs pt-1 pl-1.5  lg:flex items-center gap-3 ">
-                            {task.reminder && (
-                              <span className="hidden lg:flex items-center">
-                                <HiBellAlert className="text-red-700" />
-                                <p>{task?.dueDate}</p>
-                              </span>
-                            )}
-                            {task.subtasks.length > 0 && (
-                              <span className="text-[10px] font-extralight flex items-center gap-1 lg:text-xs ">
-                                <FaCodeBranch className="opacity-70 -rotate-90" />
-                                <p>
-                                  <span>
-                                    {
-                                      task.subtasks.filter(
-                                        (task) => task.finished === true
-                                      ).length
-                                    }
-                                  </span>{' '}
-                                  / <span>{task.subtasks.length}</span>
-                                </p>
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </DetailsModal.Open>
-
-                      <span
-                        onClick={() => handleImportant(task)}
-                        className={`${
-                          task.finished ? 'hidden' : 'pr-2 sm:text-2xl '
+                    <li className="sm:pt-5" key={task.id}>
+                      <div
+                        role="button"
+                        tabIndex={0}
+                        key={task.id}
+                        className={`h-16 mb-1 p-2 px-5 shadow-lg border-b border-gray-400 dark:border-gray-900  hover:shadow-gray-800 flex gap-2 items-center justify-between cursor-pointer  ${
+                          task.finished &&
+                          'bg-gray-300 dark:bg-gray-700 border-none rounded-xl shadow-none'
                         }`}
+                        onClick={() => handleDetails(task)}
                       >
-                        {/* Optional Feature but not using now */}
-                        {/* <ToolTip content="Mark as Imp"> */}
-                        {task.important ? (
-                          <HiMiniExclamationCircle className=" bg-gray-950 text-yellow-400 rounded-full hover:rotate-[360deg] duration-500" />
-                        ) : (
-                          <HiOutlineExclamationCircle className="  rounded-full hover:rotate-[360deg] duration-500" />
-                        )}
-                        {/* </ToolTip> */}
-                      </span>
-                      <span
-                        onClick={() => handleDelete(task)}
-                        className="text-sm p-0.5 rounded-full sm:text-xl hover:bg-red-600 hover:text-gray-300 hover:rotate-180 transition-transform duration-500 "
-                      >
-                        <HiOutlineXMark />
-                      </span>
+                        <span
+                          className="text-2xl"
+                          onClick={() => handleFinished(task)}
+                        >
+                          {/* Optional Feature but not using now */}
+
+                          {/* <ToolTip content={'Mark as finished'}> */}
+                          {task.finished ? (
+                            <BsCheckCircleFill className="text-green-500" />
+                          ) : (
+                            <BsCircle />
+                          )}
+                          {/* </ToolTip> */}
+                        </span>
+                        <DetailsModal.Open opens="todayTask-open">
+                          <div className="w-full">
+                            <span
+                              className={`sm:text-xl   ${
+                                task.finished && 'line-through '
+                              }`}
+                            >
+                              {task.desc}
+                            </span>
+                            <div className="text-xs pt-1 pl-1.5  lg:flex items-center gap-3 ">
+                              {task.reminder && (
+                                <span className="hidden lg:flex items-center">
+                                  <HiBellAlert className="text-red-700" />
+                                  <p>{task?.dueDate}</p>
+                                </span>
+                              )}
+                              {task.subtasks.length > 0 && (
+                                <span className="text-[10px] font-extralight flex items-center gap-1 lg:text-xs ">
+                                  <FaCodeBranch className="opacity-70 -rotate-90" />
+                                  <p>
+                                    <span>
+                                      {
+                                        task.subtasks.filter(
+                                          (task) => task.finished === true
+                                        ).length
+                                      }
+                                    </span>{' '}
+                                    / <span>{task.subtasks.length}</span>
+                                  </p>
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </DetailsModal.Open>
+
+                        <span
+                          onClick={() => handleImportant(task)}
+                          className={`${
+                            task.finished ? 'hidden' : 'pr-2 sm:text-2xl '
+                          }`}
+                        >
+                          {/* Optional Feature but not using now */}
+                          {/* <ToolTip content="Mark as Imp"> */}
+                          {task.important ? (
+                            <HiMiniExclamationCircle className=" bg-gray-950 text-yellow-400 rounded-full hover:rotate-[360deg] duration-500" />
+                          ) : (
+                            <HiOutlineExclamationCircle className="  rounded-full hover:rotate-[360deg] duration-500" />
+                          )}
+                          {/* </ToolTip> */}
+                        </span>
+                        <span
+                          onClick={() => handleDelete(task)}
+                          className="text-sm p-0.5 rounded-full sm:text-xl hover:bg-red-600 hover:text-gray-300 hover:rotate-180 transition-transform duration-500 "
+                        >
+                          <HiOutlineXMark />
+                        </span>
+                      </div>
                     </li>
-                    // </li>
                   ))}
                 </ul>
               </div>
@@ -203,8 +203,8 @@ function ListTemplate() {
             <DetailsModal.Window name="todayTask-open">
               <TaskDetails details={details || {}} list={true} />
             </DetailsModal.Window>
-          </div>
-        </DetailsModal>
+          </DetailsModal>
+        </div>
       </section>
     </div>
   );

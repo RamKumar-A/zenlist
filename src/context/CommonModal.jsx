@@ -36,7 +36,7 @@ function Window({ children, name }) {
         <button onClick={close} className="absolute top-4 right-4">
           <HiXMark className=" dark:text-gray-300" />
         </button>
-        <div className="px-5 ">
+        <div className="px-5" onSubmit={close}>
           {cloneElement(children, { onCloseModal: close })}
         </div>
       </div>

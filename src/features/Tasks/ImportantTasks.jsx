@@ -84,8 +84,8 @@ function ImportantTasks() {
   return (
     <div className="w-full px-5 flex items-center gap-4 justify-center ">
       <DetailsModal>
-        <div className="bg-gray-100 dark:bg-gray-950 w-full rounded-2xl relative sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2 ">
-          <div className="h-10 mx-2 my-3 rounded relative sm:h-14 sm:flex items-center justify-center ">
+        <div className="bg-gray-100 dark:bg-gray-950 w-full mb-1 rounded-2xl relative sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2 ">
+          <div className="h-10 mx-2 my-2 rounded relative top-1 sm:h-14 sm:flex items-center justify-center ">
             <TaskAddInput important={true} />
           </div>
           <div className=" overflow-y-auto sm:h-[550px] mb-2">

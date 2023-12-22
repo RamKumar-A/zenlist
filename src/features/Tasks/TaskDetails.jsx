@@ -195,17 +195,20 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
         <CommonModal>
           {/* Notes */}
           <section>
-            <div className="flex items-center gap-2">
+            <div>
               <CommonModal.Open opens="notes-open">
-                <h1 className="font-medium uppercase xl:font-semibold  cursor-pointer">
-                  Notes
+                <h1 className="font-medium uppercase xl:font-semibold flex items-center gap-x-2 cursor-pointer">
+                  <span>Notes</span>
+                  {notes?.length === 0 && (
+                    <span
+                      className=""
+                      onClick={() => setToggleNotes(!toggleNotes)}
+                    >
+                      <HiOutlinePlusCircle />
+                    </span>
+                  )}
                 </h1>
               </CommonModal.Open>
-              {notes?.length === 0 && (
-                <span className="" onClick={() => setToggleNotes(!toggleNotes)}>
-                  <HiOutlinePlusCircle />
-                </span>
-              )}
             </div>
             <span
               className="text-sm p-3 pl-5 font-semibold capitalize"

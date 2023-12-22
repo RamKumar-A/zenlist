@@ -46,7 +46,7 @@ function SubtaskTemplate({ st, tasks }) {
 
   return (
     <div className="text-sm p-1 px-3 flex items-center justify-between gap-2 border border-stone-300 rounded-xl sm:p-2 sm:px-5 md:bg-none md:text-lg lg:border-stone-700">
-      <h1 className="" onClick={handleFinishedSubTask}>
+      <h1 className="cursor-pointer" onClick={handleFinishedSubTask}>
         {st?.finished ? (
           <BsCheckCircleFill className="lg:text-green-500" />
         ) : (
@@ -56,7 +56,7 @@ function SubtaskTemplate({ st, tasks }) {
       <h1 className=" w-full">{st?.desc}</h1>
       {st?.finished && (
         <h1
-          className=" p-0.5 border border-gray-900 rounded-full  dark:border-gray-200"
+          className=" p-0.5 border border-gray-900 rounded-full cursor-pointer dark:border-gray-200 hover:rotate-180 transition-transform duration-300 hover:bg-red-600 hover:text-gray-100"
           onClick={handleDeleteSubTask}
         >
           <HiOutlineXMark className="text-sm" />

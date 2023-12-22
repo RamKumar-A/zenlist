@@ -81,8 +81,8 @@ function AllTasks() {
     <div className="">
       <DetailsModal>
         <div className=" w-full px-5 flex items-center justify-center gap-4">
-          <div className=" w-full h-full bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2 ">
-            <div className="h-10 bg-blue-700 mx-2 my-3 rounded-full relative sm:h-14 sm:flex items-center justify-center ">
+          <div className=" w-full h-full mb-1 bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2">
+            <div className="h-10 bg-blue-700 mx-2 my-2 rounded-full relative top-1 sm:h-14 sm:flex items-center justify-center ">
               <TaskAddInput />
             </div>
             <div className="overflow-y-auto sm:h-[550px] mb-2">

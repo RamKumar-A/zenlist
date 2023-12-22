@@ -14,6 +14,7 @@ function NotesInput({ tasks, setToggleNotes, toggleNotes }) {
     setNotes('');
     setToggleNotes(!toggleNotes);
   }
+
   return (
     <form onSubmit={handleSubmit} className="w-full flex items-center  md:h-20">
       <input
