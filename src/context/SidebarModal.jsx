@@ -29,17 +29,17 @@ function Window({ children, name }) {
 
   return createPortal(
     <div
-      className="h-full w-full py-2 fixed top-0 right-0 backdrop-blur-xl z-10"
+      className="h-[100vh] w-full py-2 fixed top-0 right-0 backdrop-blur-xl z-10"
       // ref={ref}
     >
-      <div className="fixed top-0 right-0 h-full">
+      <div className="fixed top-0 right-0 h-full w-[80%]">
         <button
           onClick={close}
-          className="text-2xl absolute  top-2 z-50 md:hidden right-1 dark:text-gray-200"
+          className="text-2xl absolute top-2 z-50 md:hidden right-1 dark:text-gray-200"
         >
           <HiMiniXMark />
         </button>
-        <div className="overflow-y-auto h-full">
+        <div className="overflow-y-auto h-full ">
           {cloneElement(children, { onCloseModal: close })}
         </div>
       </div>

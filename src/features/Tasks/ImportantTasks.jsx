@@ -56,6 +56,7 @@ function ImportantTasks() {
   });
 
   function handleFinished(list) {
+    if (!list.finished) toast.success('Congrats on finishing task');
     dispatch(finishedTask(list.id));
     dispatch(finishedTaskInList({ listId: list.listId, taskId: list.id }));
   }
@@ -72,7 +73,7 @@ function ImportantTasks() {
   }
 
   function handleDelete(list) {
-    toast.error('Task Removed Successfully');
+    toast.error('Task Removed ');
     dispatch(deleteTask(list.id));
     dispatch(deleteTaskInList({ listId: list.listId, taskId: list.id }));
   }
@@ -82,12 +83,12 @@ function ImportantTasks() {
   }
 
   return (
-    <div className="w-full px-5 flex items-center gap-4 justify-center ">
+    <div className="w-full px-5 flex items-center gap-4 justify-center mb-5 sm:mb-4 ">
       <DetailsModal>
-        <div className="bg-gray-100 dark:bg-gray-950 w-full mb-1 rounded-2xl relative sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2 ">
-          <div className="h-10 mx-2 my-2 rounded relative top-1 sm:h-14 sm:flex items-center justify-center ">
+        <div className="bg-gray-100 dark:bg-gray-950 w-full sm:h-full grid h-[80dvh] grid-rows-[1fr_auto] mb-1 rounded-2xl relative sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2 ">
+          {/* <div className="h-10 mx-2 my-2 rounded relative top-1 sm:h-14 sm:flex items-center justify-center ">
             <TaskAddInput important={true} />
-          </div>
+          </div> */}
           <div className=" overflow-y-auto sm:h-[550px] mb-2">
             <ul className="text-gray-950 dark:text-gray-200 px-5 ">
               {task.map((list, i) => (
@@ -99,7 +100,7 @@ function ImportantTasks() {
                   <div
                     role="button"
                     tabIndex={0}
-                    className={`h-16 mb-1 p-2 px-5 shadow-lg border-b border-gray-400 dark:border-gray-900 hover:shadow-gray-800 flex gap-2 items-center justify-between cursor-pointer ${
+                    className={`taskDiv ${
                       list.finished &&
                       'bg-gray-300 dark:bg-gray-700 border-none rounded-xl shadow-none '
                     }`}
@@ -132,7 +133,7 @@ function ImportantTasks() {
                             </span>
                           )}
                           {list.subtasks.length > 0 && (
-                            <span className="text-[10px] font-extralight flex items-center gap-1 lg:text-xs    ">
+                            <span className="subtaskLengthSpan">
                               <FaCodeBranch className="opacity-70 -rotate-90" />
                               <p>
                                 <span>
@@ -155,13 +156,13 @@ function ImportantTasks() {
                       className="pr-2 sm:text-2xl "
                     >
                       {list.important && (
-                        <HiMiniExclamationCircle className="bg-gray-950 text-yellow-400 rounded-full hover:rotate-[360deg] hover:duration-300" />
+                        <HiMiniExclamationCircle className="important" />
                       )}
                     </span>
 
                     <span
                       onClick={() => handleDelete(list)}
-                      className="text-sm p-0.5 rounded-full sm:text-xl hover:bg-red-600 hover:rotate-180 hover:transition-transform duration-500 hover:text-gray-300"
+                      className="deleteTask"
                     >
                       <HiOutlineXMark />
                     </span>
@@ -170,9 +171,9 @@ function ImportantTasks() {
               ))}
             </ul>
           </div>
-          {/* <div className="h-10 mx-2 my-3  rounded relative sm:h-14 sm:flex items-center justify-center ">
+          <div className="taskAddInputDiv">
             <TaskAddInput important={true} />
-          </div> */}
+          </div>
         </div>
         {task.length !== 0 && (
           <div className="hidden h-[620px] bg-gray-300 dark:bg-gray-900 dark:text-gray-300 rounded-2xl lg:block xl:w-1/2">

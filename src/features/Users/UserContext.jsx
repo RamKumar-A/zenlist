@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from 'react';
 const UserContext = createContext();
 
 function UserProvider({ children }) {
-  const [name, setName] = useState('');
+  const [name, setName] = useState('Name');
 
   const username = localStorage.getItem('username') || name;
   return (

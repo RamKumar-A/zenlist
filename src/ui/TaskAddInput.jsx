@@ -81,7 +81,7 @@ function TaskAddInput({ listid, important, list }) {
       <input
         type="text"
         placeholder="+ Add Tasks"
-        className="w-[100%] bg-gray-100 dark:bg-gray-900 text-gray-950 dark:text-gray-300 h-10 pl-5 border border-gray-500 rounded-xl outline-none sm:h-14 font-medium "
+        className="w-[100%] bg-gray-300 dark:bg-gray-900 text-gray-950 dark:text-gray-300 h-10 pl-5 border border-gray-500 rounded-xl outline-none sm:h-14 font-medium "
         value={value}
         onChange={(e) => setValue(e.target.value)}
         required

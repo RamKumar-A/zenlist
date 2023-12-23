@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
-import { HiOutlinePlusCircle, HiTrash } from 'react-icons/hi2';
+import {
+  HiMiniExclamationCircle,
+  HiOutlinePlusCircle,
+  HiTrash,
+} from 'react-icons/hi2';
 
 import Calendar from '../../ui/Calendar';
 import AddDueDate from '../../ui/AddDueDate';
@@ -96,8 +100,8 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
   return (
     <div
       className={`px-2 relative sm:m-5 ${
-        tasks?.finished && 'opacity-90 pointer-events-none'
-      } ${len < 0 && 'hidden'} `}
+        tasks?.finished && 'opacity-70 pointer-events-none'
+      } ${len < 0 && 'hidden'} ${tasks || 'pointer-events-none'}`}
     >
       <CalendarModal>
         <header className="flex items-center justify-between gap-2 ">
@@ -113,14 +117,20 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
             >
               {tasks?.finished ? <BsCheckCircleFill /> : <BsCircle />}
             </span>
-            <span onClick={handleDelete} className="cursor-pointer">
-              {<HiTrash />}
+            <span
+              onClick={handleDelete}
+              className="cursor-pointer hover:text-red-500"
+            >
+              <HiTrash />
             </span>
           </div>
         </header>
         <div className="pt-2">
-          <span className="text-lg py-2 font-bold xl:text-2xl xl:pt-5">
-            {tasks?.desc}
+          <span className="text-lg py-2 font-bold xl:text-2xl xl:pt-5 flex items-center gap-5">
+            {tasks?.desc || 'Click the task to view'}{' '}
+            {tasks?.important && (
+              <HiMiniExclamationCircle className="bg-black rounded-full text-yellow-500 text-lg" />
+            )}
           </span>
         </div>
         {/* Calender */}
@@ -148,7 +158,7 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
                   }`}
                   onClick={handleReminder}
                 >
-                  {tasks?.reminder ? 'Off' : 'On'}
+                  {tasks?.reminder ? 'Turn Off' : 'Turn On'}
                 </span>
               </div>
             </div>

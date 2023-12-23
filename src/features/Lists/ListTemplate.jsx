@@ -51,14 +51,13 @@ function ListTemplate() {
   });
 
   function handleFinished(task) {
-    toast.success('Congrats for finishing your task');
+    if (!task.finished) toast.success('Congrats on finishing task');
     dispatch(finishedTask(task.id));
     dispatch(finishedTaskInList({ taskId: task.id, listId: task.listId }));
   }
 
   function handleDelete(task) {
-    toast.error('Task removed Successfully');
-
+    toast.error('Task Removed ');
     dispatch(
       deleteTaskInList({
         listId: task.listId,
@@ -69,7 +68,7 @@ function ListTemplate() {
   }
 
   function handleImportant(task) {
-    toast.error('Task marked as Important');
+    if (!task.important) toast.success('Task Marked as Important');
 
     dispatch(markedImportantTask(task.id));
     dispatch(importantTask());
@@ -88,18 +87,18 @@ function ListTemplate() {
   if (!selectedList) return <Error />;
 
   return (
-    <div>
-      <header className="bg-gray-100 dark:bg-gray-950 dark:text-gray-300 text-xl mx-5 my-5 px-5 py-3 rounded-full sm:text-2xl lg:w-[46%] ">
+    <div className="grid h-[100vh] grid-rows-[1fr_auto] items-center">
+      <header className="bg-gray-100 dark:bg-gray-950 dark:text-gray-300 text-xl mx-5 sm:my-3 px-5 py-3 rounded-full sm:text-2xl lg:w-[46%] ">
         <h1 className="px-5 font-semibold">{selectedList1.name}</h1>
       </header>
 
-      <section className="w-full">
+      <section className="w-full mb-5 sm:mb-4">
         <div className="w-full px-5 flex items-center justify-center gap-4 ">
           <DetailsModal>
-            <div className=" w-full h-full mb-1 bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2">
-              <div className="h-10 bg-blue-700 mx-2 my-2 rounded-full relative top-1 sm:h-14 sm:flex items-center justify-center ">
+            <div className=" w-full mb-1 grid h-[80dvh] sm:h-full grid-rows-[1fr_auto] bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2">
+              {/* <div className="h-10 bg-blue-700 mx-2 my-2 rounded-full relative top-1 sm:h-14 sm:flex items-center justify-center ">
                 <TaskAddInput list={true} listid={selectedList1?.listId} />
-              </div>
+              </div> */}
               <div className="overflow-y-auto sm:h-[550px] mb-2">
                 <ul className="text-gray-950 dark:text-gray-200 px-5">
                   {selectedList.map((task, i) => (
@@ -108,7 +107,9 @@ function ListTemplate() {
                         role="button"
                         tabIndex={0}
                         key={task.id}
-                        className={`h-16 mb-1 p-2 px-5 shadow-lg border-b border-gray-400 dark:border-gray-900  hover:shadow-gray-800 flex gap-2 items-center justify-between cursor-pointer  ${
+                        className={`taskDiv
+                        
+                        ${
                           task.finished &&
                           'bg-gray-300 dark:bg-gray-700 border-none rounded-xl shadow-none'
                         }`}
@@ -145,7 +146,7 @@ function ListTemplate() {
                                 </span>
                               )}
                               {task.subtasks.length > 0 && (
-                                <span className="text-[10px] font-extralight flex items-center gap-1 lg:text-xs ">
+                                <span className="subtaskLengthSpan ">
                                   <FaCodeBranch className="opacity-70 -rotate-90" />
                                   <p>
                                     <span>
@@ -172,15 +173,19 @@ function ListTemplate() {
                           {/* Optional Feature but not using now */}
                           {/* <ToolTip content="Mark as Imp"> */}
                           {task.important ? (
-                            <HiMiniExclamationCircle className=" bg-gray-950 text-yellow-400 rounded-full hover:rotate-[360deg] duration-500" />
+                            <HiMiniExclamationCircle
+                              className="important
+                            
+                            "
+                            />
                           ) : (
-                            <HiOutlineExclamationCircle className="  rounded-full hover:rotate-[360deg] duration-500" />
+                            <HiOutlineExclamationCircle className=" notImportant" />
                           )}
                           {/* </ToolTip> */}
                         </span>
                         <span
                           onClick={() => handleDelete(task)}
-                          className="text-sm p-0.5 rounded-full sm:text-xl hover:bg-red-600 hover:text-gray-300 hover:rotate-180 transition-transform duration-500 "
+                          className="deleteTask"
                         >
                           <HiOutlineXMark />
                         </span>
@@ -190,9 +195,9 @@ function ListTemplate() {
                 </ul>
               </div>
 
-              {/* <div className="h-10 bg-blue-700 mx-2 my-3 rounded-full relative sm:h-14 sm:flex items-center justify-center ">
+              <div className="taskAddInputDiv">
                 <TaskAddInput list={true} listid={selectedList1?.listId} />
-              </div> */}
+              </div>
             </div>
             {selectedList1?.tasks.length > 0 && (
               <div className="hidden h-[620px] bg-gray-300 dark:bg-gray-900 dark:text-gray-300 rounded-2xl lg:block xl:w-1/2">

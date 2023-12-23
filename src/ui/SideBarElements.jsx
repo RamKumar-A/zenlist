@@ -1,13 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import User from '../features/Users/User';
-import { IoMoonOutline } from 'react-icons/io5';
 import {
   HiOutlineCalendarDays,
   HiOutlineExclamationCircle,
-  HiOutlineSun,
 } from 'react-icons/hi2';
 import Mylist from '../features/Lists/Mylist';
-import { useDarkMode } from '../context/DarkModeContext';
 import { useSelector } from 'react-redux';
 import {
   selectAllTask,
@@ -18,8 +15,6 @@ import { FaTasks } from 'react-icons/fa';
 import { MdOutlineDashboard } from 'react-icons/md';
 
 function SideBarElements() {
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
-
   const mydayTotal = useSelector(selectTasks);
   const importantTask = useSelector(selectImpTask);
   const allTask = useSelector(selectAllTask);
@@ -74,14 +69,8 @@ function SideBarElements() {
 
   return (
     <>
-      <h1 className="text-left sm:text-[1.4rem] dark:text-gray-300 px-6 py-2 pb-3 font-semibold flex items-center justify-around gap-2 ">
+      <h1 className="text-left sm:text-[1.4rem] dark:text-gray-300 px-6 py-5 pb-3 flex items-center justify-center font-semibold gap-3 flex-wrap">
         <User />
-        <p
-          onClick={toggleDarkMode}
-          className="border border-gray-800 dark:border-gray-300 rounded-full p-1 text-lg cursor-pointer"
-        >
-          {isDarkMode ? <IoMoonOutline /> : <HiOutlineSun />}
-        </p>
       </h1>
 
       {datas.map((data) => (

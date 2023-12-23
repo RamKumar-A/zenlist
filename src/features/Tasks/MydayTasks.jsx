@@ -39,9 +39,8 @@ function MydayTasks() {
   });
 
   function handleDelete(list) {
-    toast.error('Task removed Successfully');
+    toast.error('Task Removed ');
     dispatch(deleteTask(list.id));
-
     dispatch(deleteTaskInList({ listId: list.listId, taskId: list.id }));
   }
 
@@ -50,11 +49,13 @@ function MydayTasks() {
   }
 
   function handleFinished(list) {
+    if (!list.finished) toast.success('Congrats on finishing task');
     dispatch(finishedTask(list.id));
     dispatch(finishedTaskInList({ listId: list.listId, taskId: list.id }));
   }
 
   function handleImportant(list) {
+    if (!list.important) toast.success('Task Marked as important');
     dispatch(markedImportantTask(list.id));
     dispatch(importantTask());
     dispatch(
@@ -66,13 +67,9 @@ function MydayTasks() {
   }
 
   return (
-    <ul className="text-gray-950 dark:text-gray-200 px-5 mt-2">
+    <ul className="text-gray-950 dark:text-gray-200 px-5 mt-2 ">
       <DetailsModal>
         {tasks.map((list, i) => (
-          // <li
-          //   className="bg-gray-100 dark:bg-gray-950 text-gray-950 dark:text-gray-200 sm:pt-5"
-          //   key={`list-${i}-${list.id}`}
-          // >
           <li
             role="button"
             tabIndex={0}
@@ -108,7 +105,7 @@ function MydayTasks() {
                     </span>
                   )}
                   {list?.subtasks?.length > 0 && (
-                    <span className=" text-[10px] font-extralight flex items-center gap-1 lg:text-xs">
+                    <span className="subtaskLengthSpan">
                       <FaCodeBranch className="opacity-70 -rotate-90" />
                       <p>
                         <span>
@@ -130,19 +127,15 @@ function MydayTasks() {
               className={`${list.finished ? 'hidden' : 'sm:text-2xl pr-2'}`}
             >
               {list.important ? (
-                <HiMiniExclamationCircle className=" bg-gray-950 text-yellow-400 rounded-full hover:rotate-[360deg] duration-500" />
+                <HiMiniExclamationCircle className=" important" />
               ) : (
-                <HiOutlineExclamationCircle className="  rounded-full hover:rotate-[360deg] duration-500" />
+                <HiOutlineExclamationCircle className="notImportant" />
               )}
             </span>
-            <span
-              onClick={() => handleDelete(list)}
-              className="text-sm sm:text-xl rounded-full p-0.5 hover:bg-red-600 hover:rotate-180 hover:text-gray-300 hover:transition-transform duration-500 "
-            >
+            <span onClick={() => handleDelete(list)} className="deleteTask">
               <HiOutlineXMark />
             </span>
           </li>
-          // </li>
         ))}
         <DetailsModal.Window name="open-details" todayTasks>
           <div className="">
