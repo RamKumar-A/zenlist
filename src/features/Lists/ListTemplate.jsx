@@ -29,6 +29,8 @@ import {
   markedImportantTask,
 } from '../Tasks/taskSlice';
 import Error from '../../ui/Error';
+import DeleteModal from '../../context/DeleteModal';
+import DeleteTask from '../../ui/DeleteTask';
 // import ToolTip from '../../ui/ToolTip';
 
 function ListTemplate() {
@@ -96,9 +98,6 @@ function ListTemplate() {
         <div className="w-full px-5 flex items-center justify-center gap-4 ">
           <DetailsModal>
             <div className=" w-full mb-1 grid h-[80dvh] sm:h-full grid-rows-[1fr_auto] bg-gray-100 dark:bg-gray-950 rounded-2xl sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2">
-              {/* <div className="h-10 bg-blue-700 mx-2 my-2 rounded-full relative top-1 sm:h-14 sm:flex items-center justify-center ">
-                <TaskAddInput list={true} listid={selectedList1?.listId} />
-              </div> */}
               <div className="overflow-y-auto sm:h-[550px] mb-2">
                 <ul className="text-gray-950 dark:text-gray-200 px-5">
                   {selectedList.map((task, i) => (
@@ -175,7 +174,6 @@ function ListTemplate() {
                           {task.important ? (
                             <HiMiniExclamationCircle
                               className="important
-                            
                             "
                             />
                           ) : (
@@ -183,12 +181,19 @@ function ListTemplate() {
                           )}
                           {/* </ToolTip> */}
                         </span>
-                        <span
-                          onClick={() => handleDelete(task)}
-                          className="deleteTask"
-                        >
-                          <HiOutlineXMark />
-                        </span>
+                        <DeleteModal>
+                          <DeleteModal.Open opens="delete">
+                            <span className="deleteTask">
+                              <HiOutlineXMark />
+                            </span>
+                          </DeleteModal.Open>
+                          <DeleteModal.Window name="delete">
+                            <DeleteTask
+                              task={task?.desc}
+                              handler={() => handleDelete(task)}
+                            />
+                          </DeleteModal.Window>
+                        </DeleteModal>
                       </div>
                     </li>
                   ))}

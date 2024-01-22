@@ -65,14 +65,14 @@ function Mylist() {
                   value={inputValue}
                   required
                   onChange={handleChange}
-                  className="w-full h-10 dark:bg-gray-800 text-md pl-3 font-bold border border-blue-900 rounded-lg md:h-14 md:text-xl lg:h-16"
+                  className="w-full h-10 dark:bg-gray-800 dark:text-gray-300 text-md pl-3 font-bold border border-blue-900 rounded-lg md:h-14 md:text-xl lg:h-16 "
                   placeholder="Add List Name"
                 />
               </form>
             </InputModal.Window>
           </div>
           <div>
-            <ul className="text-xl pt-4 pl-2 ">
+            <ul className="text-lg pt-4 pl-2 ">
               {lists.map((list, i) => (
                 <NavLink to={`mylist/${list.name}`} key={i}>
                   <li

@@ -27,6 +27,8 @@ import {
 
 import TaskDetails from './TaskDetails';
 import DetailsModal from '../../context/DetailsModal';
+import DeleteModal from '../../context/DeleteModal';
+import DeleteTask from '../../ui/DeleteTask';
 
 function MydayTasks() {
   const [details, setDetails] = useState(null);
@@ -93,7 +95,7 @@ function MydayTasks() {
             <DetailsModal.Open opens="open-details">
               <div className="w-full">
                 <span
-                  className={`sm:text-xl ${list.finished && 'line-through '}`}
+                  className={`sm:text-lg ${list.finished && 'line-through '}`}
                 >
                   {list.desc}
                 </span>
@@ -132,9 +134,20 @@ function MydayTasks() {
                 <HiOutlineExclamationCircle className="notImportant" />
               )}
             </span>
-            <span onClick={() => handleDelete(list)} className="deleteTask">
-              <HiOutlineXMark />
-            </span>
+
+            <DeleteModal>
+              <DeleteModal.Open opens="delete">
+                <span className="deleteTask">
+                  <HiOutlineXMark />
+                </span>
+              </DeleteModal.Open>
+              <DeleteModal.Window name="delete">
+                <DeleteTask
+                  task={list?.desc}
+                  handler={() => handleDelete(list)}
+                />
+              </DeleteModal.Window>
+            </DeleteModal>
           </li>
         ))}
         <DetailsModal.Window name="open-details" todayTasks>

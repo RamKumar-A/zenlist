@@ -34,29 +34,31 @@ function User() {
         </div>
 
         <InputModal.Window name="username">
-          <form
-            className="flex flex-col gap-2 items-center"
-            onSubmit={handleSubmit}
-          >
-            <h1 className="text-center text-xl font-semibold dark:text-gray-300">
-              Enter Name
-            </h1>
-            <input
-              type="text"
-              value={value}
-              className="h-8 text-xl pl-3 outline-none mt-2 font-medium dark:bg-gray-300"
-              onChange={(e) => setValue(e.target.value)}
-              maxLength={14}
-              required
-            />
-
-            <button
-              type="submit"
-              className="bg-blue-600 rounded w-fit p-1 px-2 mt-2 text-gray-100"
+          <div>
+            <form
+              className="w-44 md:w-[500px] lg:h-40 flex flex-col gap-2 items-center"
+              onSubmit={handleSubmit}
             >
-              Save
-            </button>
-          </form>
+              <h1 className="text-center text-xl font-semibold dark:text-gray-300">
+                Enter Name
+              </h1>
+              <input
+                type="text"
+                value={value}
+                className="h-10 lg:h-16 w-full text-xl pl-3 outline-none mt-2 font-medium dark:bg-gray-800 dark:text-gray-300 rounded-lg border  border-blue-900"
+                onChange={(e) => setValue(e.target.value)}
+                maxLength={14}
+                required
+              />
+
+              <button
+                type="submit"
+                className="bg-blue-600 rounded w-fit p-1 px-2 mt-2 text-gray-100"
+              >
+                Save
+              </button>
+            </form>
+          </div>
         </InputModal.Window>
       </div>
     </InputModal>

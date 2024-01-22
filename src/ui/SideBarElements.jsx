@@ -69,7 +69,7 @@ function SideBarElements() {
 
   return (
     <>
-      <h1 className="text-left sm:text-[1.4rem] dark:text-gray-300 px-6 py-5 pb-3 flex items-center justify-center font-semibold gap-3 flex-wrap">
+      <h1 className="text-left sm:text-[1.2rem] dark:text-gray-300 px-6 py-5 pb-3 flex items-center justify-center font-semibold gap-3 ">
         <User />
       </h1>
 
@@ -80,11 +80,11 @@ function SideBarElements() {
           tasklen={data.length}
           key={data.to}
         >
-          {data.name}
+          <p>{data.name}</p>
         </SideBarContent>
       ))}
 
-      <div className=" text-left text-[1.4rem] px-6 py-2">
+      <div className=" text-left text-[1.2rem] px-6 py-2">
         <Mylist />
       </div>
     </>
@@ -94,7 +94,7 @@ function SideBarElements() {
 function SideBarContent({ to, children, icon, tasklen }) {
   return (
     <NavLink to={to}>
-      <div className="text-lg px-7 py-4 pt-4 flex items-center gap-3 lg:text-lg">
+      <div className="text-[1.1rem] px-7 py-4 pt-4 flex items-center gap-3 lg:text-[1.05rem] ">
         <div className="text-xl pr-2">{icon}</div>
         {children}
         <h1 className="text-sm font-medium px-1.5 py-0.5 ml-2">

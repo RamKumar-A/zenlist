@@ -26,6 +26,8 @@ import {
   finishedTaskInList,
   importantTaskInList,
 } from '../Lists/listSlice';
+import DeleteModal from '../../context/DeleteModal';
+import DeleteTask from '../../ui/DeleteTask';
 
 function ImportantTasks() {
   const [details, setDetails] = useState(null);
@@ -86,9 +88,6 @@ function ImportantTasks() {
     <div className="w-full px-5 flex items-center gap-4 justify-center mb-5 sm:mb-4 ">
       <DetailsModal>
         <div className="bg-gray-100 dark:bg-gray-950 w-full sm:h-full grid h-[80dvh] grid-rows-[1fr_auto] mb-1 rounded-2xl relative sm:w-[40%] md:w-full lg:w-1/2 xl:w-1/2 ">
-          {/* <div className="h-10 mx-2 my-2 rounded relative top-1 sm:h-14 sm:flex items-center justify-center ">
-            <TaskAddInput important={true} />
-          </div> */}
           <div className=" overflow-y-auto sm:h-[550px] mb-2">
             <ul className="text-gray-950 dark:text-gray-200 px-5 ">
               {task.map((list, i) => (
@@ -119,7 +118,7 @@ function ImportantTasks() {
                     <DetailsModal.Open opens="impTask-open">
                       <div className="w-full">
                         <span
-                          className={`sm:text-xl ${
+                          className={`sm:text-lg ${
                             list.finished && 'line-through '
                           }`}
                         >
@@ -150,7 +149,6 @@ function ImportantTasks() {
                         </div>
                       </div>
                     </DetailsModal.Open>
-
                     <span
                       onClick={() => handleImportant(list)}
                       className="pr-2 sm:text-2xl "
@@ -160,12 +158,22 @@ function ImportantTasks() {
                       )}
                     </span>
 
-                    <span
-                      onClick={() => handleDelete(list)}
-                      className="deleteTask"
-                    >
-                      <HiOutlineXMark />
-                    </span>
+                    <DeleteModal>
+                      <DeleteModal.Open opens="delete">
+                        <span
+                          // onClick={() => handleDelete(list)}
+                          className="deleteTask"
+                        >
+                          <HiOutlineXMark />
+                        </span>
+                      </DeleteModal.Open>
+                      <DeleteModal.Window name="delete">
+                        <DeleteTask
+                          task={list?.desc}
+                          handler={() => handleDelete(list)}
+                        />
+                      </DeleteModal.Window>
+                    </DeleteModal>
                   </div>
                 </li>
               ))}

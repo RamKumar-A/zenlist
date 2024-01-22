@@ -26,24 +26,6 @@ function Open({ children, opens: opensWindowName }) {
   return cloneElement(children, { onClick: () => open(opensWindowName) });
 }
 
-// const Button = styled.button`
-//   background: none;
-//   border: none;
-//   padding: 0.4rem;
-//   border-radius: 10px;
-//   transform: translateX(0.8rem);
-//   transition: all 0.2s;
-//   position: absolute;
-//   top: 1.2rem;
-//   right: 1.9rem;
-//   /* font-size: 15px; */
-
-//   &:hover {
-//     background-color: grey;
-//     color: #fff;
-//   }
-// `;
-
 function Window({ children, name, taskDetails }) {
   const { openName, close } = useContext(ModalContext);
   const ref = useOutsideClick(close, true);
@@ -56,7 +38,7 @@ function Window({ children, name, taskDetails }) {
       }`}
     >
       <div
-        className="bg-gray-300 dark:bg-gray-900 px-16 py-8 border border-gray-800 rounded fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  shadow-lg shadow-blue-700 "
+        className="bg-gray-300 dark:bg-gray-900 px-16 py-8 border border-gray-800 rounded fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg shadow-blue-700 "
         ref={ref}
       >
         <button

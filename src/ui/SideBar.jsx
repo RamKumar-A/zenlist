@@ -28,7 +28,7 @@ function SideBar() {
 
         <SidebarModal.Window name="sidebar-open">
           <div
-            className={`bg-gray-50 dark:bg-gray-950 text-stone-950 dark:text-gray-300 py-5 `}
+            className={`bg-gray-50 dark:bg-gray-950 text-stone-950 dark:text-gray-300 py-5`}
           >
             <SideBarElements />
           </div>
