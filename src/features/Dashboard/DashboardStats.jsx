@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import { PiSigma } from 'react-icons/pi';
 import {
   MdLabelImportantOutline,
@@ -33,48 +32,26 @@ function DashboardStats() {
       icon: <MdOutlinePlaylistRemove />,
     },
   ];
+
   return (
-    <section className="mt-5 grid grid-cols-2 gap-5 lg:grid-cols-4  ">
+    <section className=" grid grid-cols-2 gap-5 lg:grid-cols-4 py-4">
       {filterTasksData.map(({ title, icon, dataLength }) => (
         <article key={title}>
-          <StyledStats className="dark:bg-gray-900 ">
-            <StatsIcon className="dark:bg-gray-700 text-lg xl:text-2xl">
+          <div className="w-full h-16 sm:h-24 bg-gray-100  p-2 text-center flex items-center gap-3 dark:bg-gray-950 rounded-md ">
+            <div className=" p-2 sm:p-4 rounded-full  bg-blue-700 text-lg xl:text-2xl text-white">
               {icon}
-            </StatsIcon>
-            <div className="text-left">
-              <h1 className="dark:text-gray-300 text-sm xl:text-xl">{title}</h1>
-              <p className="dark:text-gray-300 font-semibold">{dataLength}</p>
             </div>
-          </StyledStats>
+            <div className="text-left text-xs sm:text-sm xl:text-md ">
+              <h1 className="dark:text-gray-300 pb-1">{title}</h1>
+              <span className="dark:text-gray-300 font-semibold">
+                {dataLength}
+              </span>
+            </div>
+          </div>
         </article>
       ))}
     </section>
   );
 }
-
-const StyledStats = styled.div`
-  width: 100%;
-  height: 120px;
-  background-color: #fff;
-  border: 1px solid #0d0752;
-  padding: 0.5rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: left;
-  gap: 0.5rem;
-  border-radius: 0.5rem;
-`;
-
-const StatsIcon = styled.div`
-  padding: 1rem;
-  border-radius: 50%;
-  background-color: #3b82f6;
-  color: #fff;
-
-  @media (max-width: 320px) {
-    padding: 0.8rem;
-  }
-`;
 
 export default DashboardStats;

@@ -3,15 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 
 import {
-  HiBellAlert,
-  HiMiniExclamationCircle,
-  HiOutlineExclamationCircle,
-  HiOutlineXMark,
-} from 'react-icons/hi2';
-import { BsCircle, BsCheckCircleFill } from 'react-icons/bs';
-import { FaCodeBranch } from 'react-icons/fa6';
-
-import {
   deleteTask,
   finishedTask,
   markedImportantTask,
@@ -25,18 +16,15 @@ import {
   importantTaskInList,
 } from '../Lists/listSlice';
 
-import TaskDetails from './TaskDetails';
-import DetailsModal from '../../context/DetailsModal';
-import DeleteModal from '../../context/DeleteModal';
-import DeleteTask from '../../ui/DeleteTask';
+import Template from '../../ui/Template';
 
 function MydayTasks() {
   const [details, setDetails] = useState(null);
   const dispatch = useDispatch();
   const tasks1 = useSelector(selectTasks);
   const tasks = [...tasks1].sort((a, b) => {
-    if (a.finished && !b.finished) return 1;
-    if (!a.finished && b.finished) return -1;
+    if (a?.finished && !b?.finished) return 1;
+    if (!a?.finished && b?.finished) return -1;
     return 0;
   });
 
@@ -69,100 +57,19 @@ function MydayTasks() {
   }
 
   return (
-    <ul className="text-gray-950 dark:text-gray-200 px-5 mt-2 ">
-      <DetailsModal>
-        {tasks.map((list, i) => (
-          <li
-            role="button"
-            tabIndex={0}
-            key={`list-${i}-${list.id}`}
-            className={`flex p-2  gap-2 items-center justify-between h-[4.5rem] px-5 border-b border-gray-400 mb-2 cursor-pointer shadow-lg hover:shadow-gray-800 bg-gray-100 dark:bg-gray-950 text-gray-950 dark:text-gray-200 sm:pt-5
-                 dark:border-gray-900  ${
-                   list.finished &&
-                   'bg-gray-300 dark:bg-gray-700 border-none rounded-xl shadow-none'
-                 }`}
-            onClick={() => handleDetails(list)}
-          >
-            <span className=" sm:text-2xl" onClick={() => handleFinished(list)}>
-              {' '}
-              {list.finished ? (
-                <BsCheckCircleFill className="text-green-500" />
-              ) : (
-                <BsCircle className="" />
-              )}
-            </span>
-
-            <DetailsModal.Open opens="open-details">
-              <div className="w-full">
-                <span
-                  className={`sm:text-lg ${list.finished && 'line-through '}`}
-                >
-                  {list.desc}
-                </span>
-                <div className="pl-1.5 pt-1 flex items-center gap-3 text-xs">
-                  {list.reminder && (
-                    <span className="hidden lg:flex items-center">
-                      <HiBellAlert className="text-red-700" />
-                      <p>{list?.dueDate}</p>
-                    </span>
-                  )}
-                  {list?.subtasks?.length > 0 && (
-                    <span className="subtaskLengthSpan">
-                      <FaCodeBranch className="opacity-70 -rotate-90" />
-                      <p>
-                        <span>
-                          {
-                            list.subtasks.filter(
-                              (task) => task.finished === true
-                            ).length
-                          }
-                        </span>{' '}
-                        / <span>{list?.subtasks?.length}</span>
-                      </p>
-                    </span>
-                  )}
-                </div>
-              </div>
-            </DetailsModal.Open>
-            <span
-              onClick={() => handleImportant(list)}
-              className={`${list.finished ? 'hidden' : 'sm:text-2xl pr-2'}`}
-            >
-              {list.important ? (
-                <HiMiniExclamationCircle className=" important" />
-              ) : (
-                <HiOutlineExclamationCircle className="notImportant" />
-              )}
-            </span>
-
-            <DeleteModal>
-              <DeleteModal.Open opens="delete">
-                <span className="deleteTask">
-                  <HiOutlineXMark />
-                </span>
-              </DeleteModal.Open>
-              <DeleteModal.Window name="delete">
-                <DeleteTask
-                  task={list?.desc}
-                  handler={() => handleDelete(list)}
-                />
-              </DeleteModal.Window>
-            </DeleteModal>
-          </li>
-        ))}
-        <DetailsModal.Window name="open-details" todayTasks>
-          <div className="">
-            <TaskDetails
-              details={details || {}}
-              todayTask={true}
-              allTask={false}
-              list={false}
-              imp={false}
-            />
-          </div>
-        </DetailsModal.Window>
-      </DetailsModal>
-    </ul>
+    <Template
+      handleDelete={handleDelete}
+      handleDetails={handleDetails}
+      handleFinished={handleFinished}
+      handleImportant={handleImportant}
+      details={details}
+      detailsOpen="myday"
+      tasks={tasks}
+      isTodayTask={true}
+      isAllTask={false}
+      isImpTask={false}
+      isList={false}
+    />
   );
 }
 

@@ -2,6 +2,7 @@ import { useState, cloneElement, useContext, createContext } from 'react';
 import { createPortal } from 'react-dom';
 import { HiXMark } from 'react-icons/hi2';
 import { useOutsideClick } from '../hooks/useOutsideClick';
+import { motion } from 'framer-motion';
 
 // 1.) Create Context
 const ModalContext = createContext();
@@ -32,31 +33,36 @@ function Window({ children, name, taskDetails }) {
 
   if (name !== openName) return null;
   return createPortal(
-    <div
-      className={`w-full h-full backdrop-blur-lg rounded fixed top-0 left-0 z-50  ${
+    <motion.div
+      className={`w-full h-full backdrop-blur-lg fixed top-0 left-0 z-50 backdrop-brightness-50  ${
         taskDetails ? 'lg:block' : ''
       }`}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.1 }}
     >
-      <div
-        className="bg-gray-300 dark:bg-gray-900 px-16 py-8 border border-gray-800 rounded fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg shadow-blue-700 "
+      <motion.div
+        className="py-4 relative w-full  space-y-3 px-1 grid top-[40%] "
         ref={ref}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.35 }}
       >
-        <button
+        {cloneElement(children)}
+        <motion.button
           onClick={close}
-          className="p-2 absolute top-5 right-8 flex items-center justify-center hover:bg-blue-700 hover:text-gray-100 rounded-full hover:rotate-180 transition-transform duration-300"
+          className="p-1 place-self-end rounded-full bg-blue-700 text-gray-100 w-fit absolute -top-6 
+         max-md:right-0 md:left-3/4 "
+          whileHover={{
+            rotate: 180,
+            backgroundColor: '#ff0000',
+          }}
+          transition={{ duration: 0.3 }}
         >
-          {taskDetails ? 'Save' : <HiXMark className="dark:text-gray-300 " />}
-        </button>
-
-        {taskDetails ? (
-          <div>{cloneElement(children, { onCloseModal: close })}</div>
-        ) : (
-          <div onSubmit={close} className="">
-            <div>{cloneElement(children, { onCloseModal: close })}</div>
-          </div>
-        )}
-      </div>
-    </div>,
+          <HiXMark className=" " />
+        </motion.button>
+      </motion.div>
+    </motion.div>,
     document.body
   );
 }

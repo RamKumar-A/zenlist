@@ -35,6 +35,7 @@ function reducer(state, action) {
           (task) => task.dueDate > format(addDays(new Date(), 1), 'dd/M/yyyy')
         ),
       };
+
     case 'filterTask/all':
       return {
         ...state,
@@ -56,6 +57,7 @@ function DashboardProvider({ children }) {
   const allTask = useSelector(selectAllTask);
   const lists = useSelector((state) => state.lists.data);
   const [params] = useSearchParams();
+
   useEffect(
     function () {
       try {
@@ -66,7 +68,7 @@ function DashboardProvider({ children }) {
         const allTask1 = Array.from(set, (id) =>
           combinedTask.find((task) => task.id === id)
         );
-        // console.log(allTask1);
+
         dispatch({ type: 'allTask/addAllTask', payload: allTask1 });
 
         const days = params.get('task');
@@ -93,7 +95,7 @@ function DashboardProvider({ children }) {
     },
     [allTask, dispatch, lists, params]
   );
-  // console.log(filterTasks);
+
   return (
     <DashboardContext.Provider value={{ allTasks, dispatch, filterTasks }}>
       {children}
@@ -104,7 +106,7 @@ function DashboardProvider({ children }) {
 function useDashboardTask() {
   const context = useContext(DashboardContext);
   if (context === undefined)
-    throw new Error('Dashboard context was used outside the cities provider');
+    throw new Error('Dashboard context was used outside the provider');
   return context;
 }
 

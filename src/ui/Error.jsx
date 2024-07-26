@@ -5,7 +5,7 @@ function Error() {
   // console.log(error);
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-900 px-3 py-2 md:px-4 md:py-5 shadow-lg shadow-gray-900">
+    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 border border-gray-700 px-3 py-2 md:px-4 md:py-5 backdrop-brightness-75 ">
       <h1 className="text-gray-900 text-xl py-2">Something went wrong 😢</h1>
       <p className="text-red-500 text-lg font-medium pb-2">
         {error.data || error.message}

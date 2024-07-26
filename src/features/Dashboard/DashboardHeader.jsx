@@ -1,12 +1,15 @@
+import SidebarModal from '../../ui/SidebarModal';
 import DashboardFilter from './DashboardFilter';
 
 function DashboardHeader() {
   return (
-    <header className="text-gray-100 grid grid-cols-1 lg:grid-cols-2 ">
-      <div className="flex items-center sm:justify-start justify-center sm:px-5 ">
-        <h1 className="text-3xl font-semibold">Dashboard</h1>
+    <header className=" grid grid-cols-1 lg:grid-cols-2 content-center items-center gap-4 ">
+      <div className="relative px-5 bg-gray-100 dark:bg-gray-950 dark:text-gray-300 rounded-full flex items-center h-[8vh] justify-start lg:w-full ">
+        <h1 className="text-xl sm:text-2xl font-semibold ">Dashboard</h1>
+        <SidebarModal />
       </div>
-      <div className="my-6 flex items-center justify-around md:py-0 lg:my-0 lg:justify-end  xl:px-5 ">
+
+      <div className="w-full flex flex-wrap xl:px-5 text-gray-100 justify-center lg:justify-end ">
         <DashboardFilter />
       </div>
     </header>

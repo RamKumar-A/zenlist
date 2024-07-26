@@ -5,17 +5,16 @@ import toast from 'react-hot-toast';
 import { FaRegRectangleList } from 'react-icons/fa6';
 
 import InputModal from '../../context/InputModal';
-import { addList } from './listSlice';
+import { addList, getList } from './listSlice';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function Mylist() {
   const [inputValue, setInputValue] = useState('');
-  const [toggleForm, setToggleForm] = useState(false);
   const [toggleList, setToggleList] = useState(false);
 
   const dispatch = useDispatch();
-  const lists = useSelector((state) => state.lists.data);
+  const lists = useSelector(getList);
 
-  // console.log(lists);
   function handleChange(e) {
     setInputValue(e.target.value);
   }
@@ -25,73 +24,115 @@ function Mylist() {
     toast.success('List added Successfully');
     dispatch(addList({ name: inputValue }));
     setInputValue('');
-    setToggleForm(false);
   }
 
   return (
-    <InputModal>
-      <section>
-        <header className="text-2xl pt-6 font-semibold flex items-center gap-2">
-          <h1
-            className=" flex items-center gap-2 cursor-pointer"
-            onClick={() => setToggleList(!toggleList)}
-          >
-            <FaRegRectangleList />
-            MyList
-          </h1>
-
+    <section>
+      <header className="text-md py-5 font-semibold flex items-center justify-between gap-2">
+        <h1
+          className=" flex items-center gap-2 cursor-pointer"
+          onClick={() => setToggleList(!toggleList)}
+        >
+          <FaRegRectangleList size={18} />
+          <span>My List</span>
+        </h1>
+        <InputModal>
           <InputModal.Open opens="list-add-form">
-            <h1
-              className="pl-5 z-50 flex items-center"
-              onClick={() => setToggleForm(!toggleForm)}
-            >
+            <h1 className="pl-5 z-50 flex items-center">
               {toggleList ? (
-                <span className="text-xs">{lists.length}</span>
-              ) : (
                 <span className=" cursor-pointer">+</span>
+              ) : (
+                <span className="text-xs">{lists.length}</span>
               )}
             </h1>
           </InputModal.Open>
-        </header>
-        <div className={toggleList ? 'hidden' : ''}>
-          <div>
-            <InputModal.Window name="list-add-form">
-              <form
-                onSubmit={handleSubmit}
-                className="w-44 h-full md:w-[500px] md:h-40 md:flex items-center lg:h-40  "
+          <InputModal.Window name={'list-add-form'}>
+            <form
+              onSubmit={handleSubmit}
+              className="w-full grid justify-items-center p-1 h-16  "
+            >
+              <input
+                type="text"
+                value={inputValue}
+                required
+                maxLength={16}
+                onChange={handleChange}
+                className="w-full h-10 lg:h-16 sm:w-1/2 dark:bg-gray-800 dark:text-gray-300 border rounded pl-2  border-blue-900 outline-none "
+                placeholder="Add List Name"
+              />
+            </form>
+          </InputModal.Window>
+        </InputModal>
+      </header>
+      <AnimatePresence>
+        {toggleList && (
+          <motion.ul
+            className="pb-5 px-2 overflow-x-hidden"
+            variants={containerVariants}
+            initial="hidden"
+            animate="animate"
+            exit="hidden"
+          >
+            {lists.map((list, i) => (
+              <motion.li
+                className="py-4 text-sm md:text-base rounded-full flex items-center gap-3 line-clamp-1 "
+                variants={childVariants}
+                key={i + list.name}
               >
-                <input
-                  type="text"
-                  value={inputValue}
-                  required
-                  onChange={handleChange}
-                  className="w-full h-10 dark:bg-gray-800 dark:text-gray-300 text-md pl-3 font-bold border border-blue-900 rounded-lg md:h-14 md:text-xl lg:h-16 "
-                  placeholder="Add List Name"
-                />
-              </form>
-            </InputModal.Window>
-          </div>
-          <div>
-            <ul className="text-lg pt-4 pl-2 ">
-              {lists.map((list, i) => (
-                <NavLink to={`mylist/${list.name}`} key={i}>
-                  <li
-                    key={i}
-                    className="py-4 mb-4 rounded-full flex items-center gap-3 "
-                  >
-                    {list.name}
-                    <span className="text-xs px-1 ml-2 font-bold rounded-full">
-                      {list.tasks.length}
-                    </span>
-                  </li>
+                <NavLink
+                  to={`/mylist/${list?.name}`}
+                  state={{ listName: list.name }}
+                >
+                  <span>{list.name}</span>
+                  <span className="text-xs pl-5 font-bold ">
+                    {list.tasks.length}
+                  </span>
                 </NavLink>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-    </InputModal>
+              </motion.li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </section>
   );
 }
+const containerVariants = {
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+  hidden: {
+    opacity: 0,
+    scale: 0.5,
+    transition: {
+      staggerChildren: 0.1,
+      when: 'afterChildren',
+    },
+  },
+};
+
+const childVariants = {
+  animate: { opacity: 1, scale: 1 },
+  hidden: { opacity: 0, scale: 0.5 },
+};
 
 export default Mylist;
+
+// <motion.li
+//   className="py-4 text-sm md:text-base rounded-full flex items-center gap-3 line-clamp-1 "
+//   key={i + list.name}
+//   variants={childVariants}
+// >
+//   <NavLink
+//     to={`/mylist/${list?.name}`}
+//     state={{ listName: list.name }}
+//   >
+//     <span>{list.name}</span>
+//     <span className="text-xs pl-5 font-bold ">
+//       {list.tasks.length}
+//     </span>
+//   </NavLink>
+// </motion.li>

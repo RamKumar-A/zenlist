@@ -2,18 +2,16 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // retreving list and its data in local storage (with the key: 'lists')
 
-const storedListTask = localStorage.getItem('lists');
+const persistedListTask = localStorage.getItem('lists');
 
 const initialState = {
-  data: storedListTask
-    ? JSON.parse(storedListTask)
-    : [
-        {
-          listId: 1,
-          name: 'Personal',
-          tasks: [],
-        },
-      ],
+  data: JSON.parse(persistedListTask) || [
+    {
+      listId: 1,
+      name: 'Personal',
+      tasks: [],
+    },
+  ],
 };
 
 const listSlice = createSlice({
@@ -33,14 +31,11 @@ const listSlice = createSlice({
     },
 
     deleteList(state, action) {
-      if (action.payload !== 1) {
-        state.data = state.data.filter(
-          (list) => list.listId !== action.payload
-        );
-      }
-
-      // deleting list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      state.data = state.data.filter((list) => list.listId !== action.payload);
+      // console.log(action.payload);
+      // deleting list in localStorage
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     addTaskInList(state, action) {
@@ -55,7 +50,8 @@ const listSlice = createSlice({
       }
 
       // storing data to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     deleteTaskInList(state, action) {
@@ -66,7 +62,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     finishedTaskInList(state, action) {
@@ -85,7 +82,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data);.
+      updateFunc(state);
     },
 
     importantTaskInList(state, action) {
@@ -104,7 +102,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     addDueDateInList(state, action) {
@@ -123,7 +122,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     addReminderInList(state, action) {
@@ -145,7 +145,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));/
+      updateFunc(state);
     },
 
     setReminderInList(state, action) {
@@ -160,7 +161,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     addSubTaskInList(state, action) {
@@ -178,7 +180,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     finishedSubtasksInList(state, action) {
@@ -203,7 +206,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     deleteSubtasksInList(state, action) {
@@ -223,7 +227,8 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
 
     addNotesInList(state, action) {
@@ -241,10 +246,15 @@ const listSlice = createSlice({
       }
 
       //  updating tasks and its list to localStorage
-      localStorage.setItem('lists', JSON.stringify(state.data));
+      // localStorage.setItem('lists', JSON.stringify(state.data));
+      updateFunc(state);
     },
   },
 });
+
+function updateFunc(state) {
+  localStorage.setItem('lists', JSON.stringify(state.data));
+}
 
 export const {
   addList,
@@ -261,5 +271,7 @@ export const {
   setReminderInList,
   addDueDateInList,
 } = listSlice.actions;
+
+export const getList = (state) => state.lists.data;
 
 export default listSlice.reducer;

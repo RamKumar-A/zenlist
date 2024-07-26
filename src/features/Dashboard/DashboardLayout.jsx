@@ -4,7 +4,7 @@ import DashboardStats from './DashboardStats';
 
 function DashboardLayout() {
   return (
-    <main className="dark:bg-gray-950 px-2 py-5 grid md:px-4 lg:py-3 ">
+    <main className="dark:bg-blue-700 px-3 py-3  overscroll-y-scroll h-full ">
       <DashboardHeader />
       <DashboardStats />
       <DashboardMain />

@@ -17,10 +17,6 @@ function TaskAddInput({ listid, important, list }) {
     return numericValue;
   }
 
-  // const currentDate = new Date();
-
-  // const timeToAdd = TIME_TO_ADD;
-
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -77,11 +73,14 @@ function TaskAddInput({ listid, important, list }) {
   }
 
   return (
-    <form className="w-full absolute" onSubmit={handleSubmit}>
+    <form
+      className="w-full px-2 h-full inset-0 absolute"
+      onSubmit={handleSubmit}
+    >
       <input
         type="text"
         placeholder="+ Add Tasks"
-        className="w-[100%] bg-gray-300 dark:bg-gray-900 text-gray-950 dark:text-gray-300 h-10 pl-5 border border-gray-500 rounded-xl outline-none sm:h-14 font-medium "
+        className="w-full border-2 border-gray-400 bg-gray-200 dark:bg-gray-900 text-gray-950 dark:text-gray-300 h-full pl-5  rounded-2xl outline-none font-medium"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         required

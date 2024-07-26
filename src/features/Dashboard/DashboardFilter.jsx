@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import Error from '../../ui/Error';
+import { motion } from 'framer-motion';
 
 function DashboardFilter() {
   return (
@@ -29,20 +30,30 @@ function Filter({ filterField, options }) {
   );
 
   return (
-    <div className="p-2 grid grid-cols-2 gap-1 md:grid-cols-4  ">
+    <div className=" flex items-center justify-evenly flex-wrap gap-2 ">
       {isValidFilter ? (
         options.map((option) => (
           <button
             onClick={() => handleClick(option.value)}
             disabled={option.value === currentFilter}
             key={option.value}
-            className={`lg:text-sm xl:text-lg p-2 border-none font-medium transition-all duration-300 lg:px-1 lg:py-2 ${
+            className={`p-2 text-center text-sm font-medium  relative  ${
               option.value === currentFilter
-                ? 'bg-gray-100  text-blue-700 rounded-lg'
-                : ''
-            }`}
+                ? 'text-blue-700 dark:text-gray-100'
+                : ' '
+            } `}
           >
-            {option.label}
+            {option.value === currentFilter && (
+              <motion.div
+                layoutId="active-pill"
+                className="absolute inset-0 bg-gray-100 dark:bg-gray-950  "
+                style={{ borderRadius: '4px' }}
+                transition={{ type: 'spring', duration: 0.5 }}
+              />
+            )}
+            <span className="relative tracking-wider z-10  ">
+              {option.label}
+            </span>
           </button>
         ))
       ) : (
@@ -53,3 +64,10 @@ function Filter({ filterField, options }) {
 }
 
 export default DashboardFilter;
+
+// $;
+// {
+//   option.value === currentFilter
+//     ? 'bg-gray-100 dark:bg-gray-950 text-blue-700 dark:text-gray-100'
+//     : '';
+// }

@@ -6,15 +6,13 @@ import {
   deleteSubtasksInList,
   finishedSubtasksInList,
 } from '../features/Lists/listSlice';
-import toast from 'react-hot-toast';
-// import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 function SubtaskTemplate({ st, tasks }) {
   const { listId, id } = tasks;
-  // console.log(tasks);
   const dispatch = useDispatch();
   function handleDeleteSubTask() {
-    toast.error('Subtask removed Successfully');
+    // toast.error('Subtask removed Successfully');
     dispatch(
       deleteSubtasksInList({
         listId: listId,
@@ -22,8 +20,10 @@ function SubtaskTemplate({ st, tasks }) {
         deleteId: st?.subTaskId,
       })
     );
+
     dispatch(deleteSubTask({ taskId: id, deleteId: st?.subTaskId }));
   }
+
   function handleFinishedSubTask() {
     dispatch(
       finishedSubtasksInList({
@@ -45,24 +45,29 @@ function SubtaskTemplate({ st, tasks }) {
   // );
 
   return (
-    <div className="text-sm p-1 px-3 flex items-center justify-between gap-2 border border-stone-300 rounded-xl sm:p-2 sm:px-5 md:bg-none md:text-lg lg:border-stone-700">
-      <h1 className="cursor-pointer" onClick={handleFinishedSubTask}>
+    <li className="text-sm py-1.5 px-3 flex items-center justify-between gap-2 border border-gray-300 dark:border-gray-800 rounded-xl">
+      <span className="cursor-pointer p-1" onClick={handleFinishedSubTask}>
         {st?.finished ? (
-          <BsCheckCircleFill className="lg:text-green-500" />
+          <BsCheckCircleFill className="text-green-500" />
         ) : (
           <BsCircle className="" />
         )}
-      </h1>
-      <h1 className=" w-full">{st?.desc}</h1>
+      </span>
+      <span className=" w-full">{st?.desc}</span>
       {st?.finished && (
-        <h1
-          className=" p-0.5 border border-gray-900 rounded-full cursor-pointer dark:border-gray-200 hover:rotate-180 transition-transform duration-300 hover:bg-red-600 hover:text-gray-100"
+        <motion.span
+          className="rounded-full cursor-pointer p-1"
           onClick={handleDeleteSubTask}
+          whileHover={{
+            backgroundColor: '#ff0000',
+            color: '#fff',
+            rotate: 180,
+          }}
         >
-          <HiOutlineXMark className="text-sm" />
-        </h1>
+          <HiOutlineXMark size={14} />
+        </motion.span>
       )}
-    </div>
+    </li>
   );
 }
 

@@ -5,7 +5,7 @@ import { addSubTaskInList } from '../features/Lists/listSlice';
 import toast from 'react-hot-toast';
 
 function SubtaskInput({ tasks }) {
-  const { id, listId } = tasks;
+  const { id, listId, desc: addTo, subtasks } = tasks || {};
   const [inpValue, setInpValue] = useState('');
   const [counter, setCounter] = useState(1);
   const dispatch = useDispatch();
@@ -16,7 +16,6 @@ function SubtaskInput({ tasks }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    toast.success('Subtask added');
 
     const newSubtask = {
       subTaskId: generateSubtaskID(),
@@ -31,20 +30,22 @@ function SubtaskInput({ tasks }) {
     dispatch(addSubtask({ taskId: id, subtask: newSubtask }));
 
     setInpValue('');
+    toast.success(`Subtask added to ${addTo}`);
   }
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="text-gray-950 dark:text-gray-200 w-full py-2 pt-4 flex items-center justify-center lg:pl-3 lg:justify-start  "
+      className="text-gray-950 dark:text-gray-200 w-full  flex items-center justify-center  lg:justify-start p-1 "
     >
       <input
         type="text"
         value={inpValue}
         onChange={(e) => setInpValue(e.target.value)}
-        className=" w-[90%] bg-gray-200 dark:bg-gray-900 p-1 pl-5 border border-gray-500 dark:border-gray-900 outline-none rounded-lg sm:h-9 xl:w-1/2 "
-        placeholder="Add some subtasks"
+        className=" w-full bg-gray-200 dark:bg-gray-900 px-3 border border-gray-500 dark:border-gray-900 outline-none rounded text-sm py-1 xl:w-1/2 "
+        placeholder="Add subtask"
         required
+        disabled={subtasks?.length >= 3}
       />
     </form>
   );

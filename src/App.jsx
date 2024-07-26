@@ -59,13 +59,17 @@ function App() {
           gutter={12}
           containerStyle={{ margin: '15px' }}
           toastOptions={{
-            success: { duration: 1100 },
-            error: { duration: 1000 },
+            success: {
+              duration: 2000,
+              theme: {
+                primary: 'green',
+                secondary: 'black',
+              },
+            },
+            error: { duration: 1500 },
             style: {
-              fontSize: '16px',
-              maxWidth: '500px',
-              padding: '16px 24px',
-              backgroundColor: 'white',
+              fontSize: '0.95rem',
+              padding: '0.95rem',
             },
           }}
         />

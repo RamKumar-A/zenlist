@@ -9,8 +9,9 @@ import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 import { addReminder } from '../features/Tasks/taskSlice';
 import { addReminderInList } from '../features/Lists/listSlice';
+import toast from 'react-hot-toast';
 
-function Calendar({ id, listId, setCalendarClose }) {
+function Calendar({ id, listId }) {
   // const date = new Date();
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedTime, setSelectedTime] = useState(new Date());
@@ -19,7 +20,6 @@ function Calendar({ id, listId, setCalendarClose }) {
   // console.log(selectedTime);
   function handleSubmit(e) {
     e.preventDefault();
-    setCalendarClose((close) => !close);
     dispatch(
       addReminderInList({
         taskId: id,
@@ -35,6 +35,7 @@ function Calendar({ id, listId, setCalendarClose }) {
         time: format(selectedTime, 'h:mm a'),
       })
     );
+    toast.success('Reminder Added');
   }
 
   return (

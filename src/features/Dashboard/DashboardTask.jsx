@@ -1,13 +1,23 @@
 import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
-import styled from 'styled-components';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
-import { HiOutlineXMark } from 'react-icons/hi2';
+import { HiOutlineExclamationCircle, HiOutlineXMark } from 'react-icons/hi2';
 
 import { useDashboardTask } from './DashboardContext';
-import { deleteTask, finishedTask } from '../Tasks/taskSlice';
-import { deleteTaskInList, finishedTaskInList } from '../Lists/listSlice';
+
+import {
+  deleteTask,
+  finishedTask,
+  importantTask,
+  markedImportantTask,
+} from '../Tasks/taskSlice';
+import {
+  deleteTaskInList,
+  finishedTaskInList,
+  importantTaskInList,
+} from '../Lists/listSlice';
 import EmptyTasks from '../../ui/EmptyTasks';
 
 function DashboardTask() {
@@ -20,6 +30,17 @@ function DashboardTask() {
     return 0;
   });
 
+  function handleImportant(list) {
+    if (!list.important) toast.success('Task Marked as important');
+    dispatch(markedImportantTask(list.id));
+    dispatch(importantTask());
+    dispatch(
+      importantTaskInList({
+        listId: list.listId,
+        taskId: list.id,
+      })
+    );
+  }
   function handleFinished(task) {
     toast.success('Task Finished Successfully');
     dispatch(finishedTask(task.id));
@@ -33,37 +54,62 @@ function DashboardTask() {
   }
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-300 w-full h-[300px] p-5 border border-gray-500 rounded-lg overflow-y-auto md:block lg:h-[500px]">
-      <h1 className=" text-xl px-1 font-semibold lg:text-2xl ">Tasks</h1>
+    <div className="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-300 w-full   rounded-md overflow-y-auto py-5 px-4 grid gap-5 h-full content-start ">
+      <h1 className=" text-lg font-medium lg:text-xl flex justify-between items-center ">
+        <span>Tasks</span>
+        {/* <span className="text-xs cursor-pointer">Remove All</span> */}
+      </h1>
       {tasks?.length !== 0 ? (
-        <ul className="p-1 ">
-          {tasks?.map((task) => (
-            <StyledLi
-              key={task.id}
-              className={`${
-                task.finished ? 'bg-gray-300 dark:bg-gray-700 rounded-xl' : ''
-              } shadow-lg mb-3 hover:shadow-gray-800 cursor-pointer`}
-            >
-              <h1
-                className=" sm:text-2xl cursor-pointer"
-                onClick={() => handleFinished(task)}
+        <ul className="space-y-3 overflow-y-auto">
+          <AnimatePresence>
+            {tasks?.map((task) => (
+              <motion.li
+                key={task.id}
+                className={`bg-gray-200 dark:bg-gray-800 rounded-lg px-2 relative flex items-center justify-center gap-1 cursor-pointer h-10 origin-right ${
+                  task.finished &&
+                  'border-none  rounded-xl brightness-110 shadow-none opacity-40 dark:brightness-50'
+                }  `}
+                animate={{ scale: 1 }}
+                initial={{ scale: 0 }}
+                exit={{ scale: 0 }}
               >
-                {task.finished ? (
-                  <BsCheckCircleFill className="text-green-500" />
-                ) : (
-                  <BsCircle />
-                )}
-              </h1>
-              <div className="w-full sm:text-xl">
-                <h1>{task.desc}</h1>
-              </div>
-              <div onClick={() => handleDelete(task)}>
-                <h1 className="text-xs p-0.5  hover:bg-red-600 hover:rotate-180 transition-transform duration-500 rounded-full sm:text-xl cursor-pointer hover:text-gray-300">
+                <span
+                  className="cursor-pointer"
+                  onClick={() => handleFinished(task)}
+                >
+                  {task.finished ? (
+                    <BsCheckCircleFill size={17} className="text-green-500" />
+                  ) : (
+                    <BsCircle size={17} />
+                  )}
+                </span>
+                <span className="w-full text-sm md:text-sm ">{task.desc}</span>
+                <span
+                  onClick={() => handleImportant(task)}
+                  className={`${
+                    (task?.finished || !task?.important) && 'hidden'
+                  } text-md bg-orange-400 text-white rounded-full `}
+                >
+                  {task?.important && (
+                    <HiOutlineExclamationCircle className="" />
+                  )}
+                </span>
+
+                <motion.button
+                  className="p-1"
+                  onClick={() => handleDelete(task)}
+                  whileHover={{
+                    borderRadius: 9999,
+                    backgroundColor: '#ff0000',
+                    color: '#fff',
+                    rotate: 360,
+                  }}
+                >
                   <HiOutlineXMark />
-                </h1>
-              </div>
-            </StyledLi>
-          ))}
+                </motion.button>
+              </motion.li>
+            ))}
+          </AnimatePresence>
         </ul>
       ) : (
         <EmptyTasks />
@@ -71,16 +117,5 @@ function DashboardTask() {
     </div>
   );
 }
-
-const StyledLi = styled.li`
-  display: flex;
-  gap: 0.75rem;
-  height: 4rem;
-  align-items: center;
-  padding: 0.5rem;
-  @media (min-width: 1280px) {
-    height: 5rem;
-  }
-`;
 
 export default DashboardTask;

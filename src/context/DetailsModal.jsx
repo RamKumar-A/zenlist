@@ -1,6 +1,7 @@
 import { cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { HiXMark } from 'react-icons/hi2';
+import { motion } from 'framer-motion';
 
 // 1.)Create Context
 const ModalContext = createContext();
@@ -28,23 +29,32 @@ function Window({ children, name, todayTasks }) {
   if (name !== openName) return null;
 
   return createPortal(
-    <div
-      className={`fixed w-full h-full py-2 z-[1000] overflow-auto sm:w-full backdrop-blur-xl top-0 left-0 ${
-        todayTasks ? 'lg: block' : 'lg:hidden'
+    <motion.div
+      className={`fixed w-full h-full py-2 z-50 overflow-auto sm:w-full backdrop-blur-lg top-0 left-0 backdrop-brightness-50 ${
+        todayTasks ? 'lg: block' : 'xl:hidden'
       }  `}
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-14 py-16 rounded-lg ">
-        <button
-          className="absolute sm:p-2 translate-x-3 top-12 sm:top-20 right-16 sm:right-8  rounded-lg"
+      <motion.div
+        className="fixed top-0 left-0 right-0 p-1 px-2 sm:w-full rounded-lg h-full grid justify-items-center place-items-center place-content-center space-y-3 "
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.button
+          className="place-self-end rounded-full bg-blue-600 text-blue-50 p-1"
           onClick={close}
+          whileHover={{ rotate: 360, backgroundColor: '#ff0000' }}
         >
-          <HiXMark className="dark:text-gray-300 sm:font-bold text-2xl" />
-        </button>
-        <div className="w-[300px] h-full bg-gray-300  lg:text-gray-900 dark:bg-gray-900 dark:text-gray-300 py-3 rounded-lg shadow-lg shadow-blue-700 md:w-[500px]  ">
+          <HiXMark className="" size={18} />
+        </motion.button>
+        <div className="sm:w-96 h-full bg-white border rounded border-gray-700  dark:bg-gray-900 dark:text-gray-300 overflow-y-auto  relative">
           {cloneElement(children)}
         </div>
-      </div>
-    </div>,
+      </motion.div>
+    </motion.div>,
     document.body
   );
 }

@@ -1,7 +1,7 @@
 import { cloneElement, createContext, useContext, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { HiXMark } from 'react-icons/hi2';
-
+import { motion } from 'framer-motion';
 // 1.) Create Context
 
 const ModalContext = createContext();
@@ -32,27 +32,32 @@ function Window({ children, name, calendarClose, setCalendarClose }) {
   // most not use useOutsideClick because Calendar will not open, (ie)it considers the calender as clickedoutside
   // const ref = useOutsideClick(close, true);
   if (name !== openName) return null;
+
   if (calendarClose) {
     close();
     setCalendarClose(!calendarClose);
   }
+
   return createPortal(
-    <div className="fixed w-full backdrop-blur-xl h-full top-0 left-0 z-[1000] py-2 ">
-      <div
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-300 dark:bg-gray-900 rounded px-5 sm:px-16 py-12  shadow-lg shadow-blue-700"
-        // ref={ref}
-      >
-        <button
+    <motion.div
+      className="fixed w-full backdrop-blur-lg backdrop-brightness-50 h-full top-0 left-0 z-[1000] py-2 "
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <motion.div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-300 dark:bg-gray-900 py-10 md:w-1/4 grid place-items-center ">
+        <motion.button
           onClick={close}
-          className="dark:text-gray-300 absolute top-4 right-4 hover:bg-blue-700 hover:text-gray-900 p-1 rounded "
+          className="dark:text-gray-300 absolute top-4 right-4 bg-blue-700 text-gray-100 p-1 rounded-full "
+          whileHover={{ rotate: 180, backgroundColor: '#ff0000' }}
+          transition={{ duration: 0.3 }}
         >
           <HiXMark />
-        </button>
-        <div className="">
-          {cloneElement(children, { onCloseModal: close })}
-        </div>
-      </div>
-    </div>,
+        </motion.button>
+        <div className="relative  px-1">{cloneElement(children)}</div>
+      </motion.div>
+    </motion.div>,
     document.body
   );
 }

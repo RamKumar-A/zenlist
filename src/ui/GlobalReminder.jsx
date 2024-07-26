@@ -12,9 +12,9 @@ function GlobalReminder() {
   const newTaskInList = lists.flatMap((all) => all.tasks);
   const comninedTask = allTask.concat(newTaskInList);
 
-  const set = new Set(comninedTask.map((task) => task.id));
+  const set = new Set(comninedTask?.map((task) => task?.id));
   const allTasks = Array.from(set, (id) =>
-    comninedTask.find((task) => task.id === id)
+    comninedTask.find((task) => task?.id === id)
   );
   const dispatch = useDispatch();
 
@@ -32,7 +32,7 @@ function GlobalReminder() {
             listId,
             id,
           } = remind;
-          const [day, month, year] = remindDate.split('/');
+          const [day, month, year] = remindDate?.split('/');
           const timeString = remindTime;
           const convertedDate = new Date(
             `${year}-${month}-${day} ${timeString}`
@@ -41,6 +41,7 @@ function GlobalReminder() {
             toast.error(`Reminder for ${desc} Due date on ${dueDate}`, {
               icon: <HiBellAlert className="text-red-600" />,
               position: 'top-right',
+              duration: 3,
             });
             dispatch(setReminderInList({ listId: listId, taskId: id }));
             dispatch(setReminder({ listId: listId, taskId: id }));

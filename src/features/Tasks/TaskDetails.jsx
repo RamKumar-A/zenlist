@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
 import {
-  HiMiniExclamationCircle,
+  HiOutlineExclamationCircle,
   HiOutlinePlusCircle,
   HiTrash,
 } from 'react-icons/hi2';
@@ -16,7 +16,6 @@ import NotesInput from '../../ui/NotesInput';
 import SubtaskTemplate from '../../ui/SubtaskTemplate';
 import SubtaskInput from '../../ui/SubtaskInput';
 import CalendarModal from '../../context/CalendarModal';
-import CommonModal from '../../context/CommonModal';
 
 import {
   deleteTaskInList,
@@ -32,6 +31,8 @@ import {
   selectTasks,
   setReminder,
 } from './taskSlice';
+import InputModal from '../../context/InputModal';
+import DeleteTask from '../../ui/DeleteTask';
 
 function convertDate(date = '01/01/2070', time = '00:00') {
   const [day, month, year] = date?.split('/');
@@ -76,11 +77,12 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
   const month = convertedRemindDate?.toLocaleDateString('en-US', {
     month: 'short',
   });
+
   const hrs = convertedRemindDate?.getHours();
   const convertedHrs = String(hrs > 12 ? hrs - 12 : hrs).padStart(2, '0');
   const mins = convertedRemindDate?.getMinutes();
   const convertedMins = String(mins).padStart(2, '0');
-  const len = Object.keys(details).length;
+  // const len = Object.keys(details).length;
 
   function handleReminder() {
     dispatch(setReminder({ taskId: tasks?.id }));
@@ -99,16 +101,16 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
 
   return (
     <div
-      className={`px-2 relative sm:m-5 ${
+      className={`w-full px-2 lg:px-4 relative p-3 sm:space-y-2 ${
         tasks?.finished && 'opacity-70 pointer-events-none'
-      } ${len < 0 && 'hidden'} ${tasks || 'pointer-events-none'}`}
+      }  ${tasks || 'pointer-events-none'}`}
     >
       <CalendarModal>
-        <header className="flex items-center justify-between gap-2 ">
+        <header className="flex items-center justify-between gap-2 py-2  ">
           <div className="text-xs font-extralight sm:text-xs">
             Mylist &#12297;{params?.list || 'Personal'}
           </div>
-          <div className="text-sm flex sm:text-lg sm:gap-2 ">
+          <div className="text-sm flex gap-2 ">
             <span
               onClick={handleFinished}
               className={`cursor-pointer ${
@@ -117,142 +119,129 @@ function TaskDetails({ details, allTask, list, imp, todayTask }) {
             >
               {tasks?.finished ? <BsCheckCircleFill /> : <BsCircle />}
             </span>
-            <span
-              onClick={handleDelete}
-              className="cursor-pointer hover:text-red-500"
-            >
-              <HiTrash />
-            </span>
+            <InputModal>
+              <InputModal.Open opens="delete-task-details">
+                <span
+                  // onClick={handleDelete}
+                  className="cursor-pointer hover:text-red-500"
+                >
+                  <HiTrash />
+                </span>
+              </InputModal.Open>
+              <InputModal.Window name="delete-task-details">
+                <DeleteTask handler={handleDelete} />
+              </InputModal.Window>
+            </InputModal>
           </div>
         </header>
-        <div className="pt-2">
-          <span className="text-lg py-2 font-bold xl:text-2xl xl:pt-5 flex items-center gap-5">
+        <h1 className="flex items-center gap-2 py-4 text-lg ">
+          <span className="text-xl tracking-wider font-bold">
             {tasks?.desc || 'Click the task to view'}{' '}
-            {tasks?.important && (
-              <HiMiniExclamationCircle className="bg-black rounded-full text-yellow-500 text-lg" />
-            )}
           </span>
-        </div>
+          {tasks?.important && (
+            <span className="bg-orange-400 rounded-full text-white  ">
+              <HiOutlineExclamationCircle className=" " size={14} />
+            </span>
+          )}
+        </h1>
         {/* Calender */}
-        <section className="pb-5">
-          <div className="h-20 flex items-center sm:gap-3">
-            <div className=" w-full">
-              <div className="flex items-center gap-2">
-                <CalendarModal.Open opens="calendar-open">
-                  <div className="flex gap-2 ">
-                    <span className="text-xs px-1 font-bold border border-gray-200 rounded tracking-widest lg:font-semibold xl:text-sm xl:py-2 lg:shadow-sm lg:shadow-blue-800 ">
-                      {`${month || 'JAN'} ${
-                        convertedRemindDate?.getDate() || '01'
-                      }, ${convertedRemindDate?.getFullYear() || '2023'}`}
-                    </span>
-                    <span className="text-xs px-1 font-bold border border-gray-200 tracking-widest lg:font-semibold xl:text-sm xl:py-2 lg:shadow-sm lg:shadow-blue-800 rounded">
-                      {`${convertedHrs || '12'}:${convertedMins || '00'} ${
-                        hrs < 12 ? 'AM' : 'PM' || ''
-                      }`}
-                    </span>
-                  </div>
-                </CalendarModal.Open>
-                <span
-                  className={`text-sm text-stone-50 px-2 py-1 font-semibold rounded-full cursor-pointer  ${
-                    tasks?.reminder ? 'bg-red-700' : 'bg-gray-500'
+        <section className="space-y-4 py-2 ">
+          <div className="flex items-center gap-3">
+            <CalendarModal.Open opens="calendar-open">
+              <div className="flex gap-2 ">
+                <span className="text-xs xl:p-2 p-1 font-medium border border-gray-200 rounded tracking-widest">
+                  {`${month || 'JAN'} ${
+                    convertedRemindDate?.getDate() || '01'
+                  }, ${convertedRemindDate?.getFullYear() || '2023'}`}
+                </span>
+                <span className="text-xs xl:p-2 p-1 font-medium border border-gray-200 tracking-widest rounded">
+                  {`${convertedHrs || '12'}:${convertedMins || '00'} ${
+                    hrs < 12 ? 'AM' : 'PM' || ''
                   }`}
-                  onClick={handleReminder}
-                >
-                  {tasks?.reminder ? 'Turn Off' : 'Turn On'}
                 </span>
-              </div>
-            </div>
-            <CalendarModal.Window
-              name="calendar-open"
-              calendarClose={calendarClose}
-              setCalendarClose={setCalendarClose}
-            >
-              <Calendar
-                id={tasks?.id}
-                list={list}
-                listId={tasks?.listId}
-                setCalendarClose={setCalendarClose}
-              />
-            </CalendarModal.Window>
-          </div>
-
-          <div className="xl:py-5">
-            <CalendarModal.Open opens="due-date-open">
-              <div className="flex items-center gap-5">
-                <span className="text-xs px-1 tracking-widest font-bold border border-gray-200 lg:font-semibold xl:text-sm   xl:py-2 lg:shadow-sm lg:shadow-blue-800">
-                  {dueDate || 'JAN 01, 2023'}
-                </span>
-                <h1 className="font-semibold uppercase lg:text-normal cursor-pointer">
-                  Add Due Date
-                </h1>
               </div>
             </CalendarModal.Open>
-            <CalendarModal.Window
-              name="due-date-open"
-              calendarClose={calendarClose}
-              setCalendarClose={setCalendarClose}
+            <span
+              className={`text-xs xl:p-2 px-2 py-0.5 text-blue-50 font-semibold rounded cursor-pointer  ${
+                tasks?.reminder ? 'bg-red-700' : 'bg-blue-600'
+              }`}
+              onClick={handleReminder}
             >
-              <AddDueDate
-                listId={tasks?.listId}
-                list={list}
-                id={tasks?.id}
-                setCalendarClose={setCalendarClose}
-              />
+              {tasks?.reminder ? 'Turn Off' : 'Turn On'}
+            </span>
+            <CalendarModal.Window name={'calendar-open'}>
+              <Calendar id={tasks?.id} list={list} listId={tasks?.listId} />
             </CalendarModal.Window>
           </div>
+
+          <CalendarModal.Open opens="due-date-open">
+            <h1 className="flex items-center gap-3 w-fit ">
+              <span className="text-xs  tracking-widest font-medium border border-gray-200 xl:p-2 p-1 ">
+                {dueDate || 'JAN 01, 2023'}
+              </span>
+              <span className="font-medium   cursor-pointer text-sm xl:p-2">
+                Add due date
+              </span>
+            </h1>
+          </CalendarModal.Open>
+          <CalendarModal.Window name={'due-date-open'}>
+            <AddDueDate
+              listId={tasks?.listId}
+              list={list}
+              id={tasks?.id}
+              calendarClose={calendarClose}
+              setCalendarClose={setCalendarClose}
+            />
+          </CalendarModal.Window>
         </section>
 
-        <CommonModal>
+        <InputModal>
           {/* Notes */}
-          <section>
-            <div>
-              <CommonModal.Open opens="notes-open">
-                <h1 className="font-medium uppercase xl:font-semibold flex items-center gap-x-2 cursor-pointer">
-                  <span>Notes</span>
-                  {notes?.length === 0 && (
-                    <span
-                      className=""
-                      onClick={() => setToggleNotes(!toggleNotes)}
-                    >
-                      <HiOutlinePlusCircle />
-                    </span>
-                  )}
-                </h1>
-              </CommonModal.Open>
-            </div>
+          <section className="py-3 space-y-2">
+            <InputModal.Open opens="notes-open">
+              <h1 className="font-medium capitalize flex items-center gap-2 cursor-pointer text-md">
+                <span>Notes</span>
+                {notes?.length === 0 && (
+                  <span
+                    className=""
+                    onClick={() => setToggleNotes(!toggleNotes)}
+                  >
+                    <HiOutlinePlusCircle />
+                  </span>
+                )}
+              </h1>
+            </InputModal.Open>
             <span
-              className="text-sm p-3 pl-5 font-semibold capitalize"
+              className="text-sm line-clamp-1  capitalize"
               onClick={() => setToggleNotes(!toggleNotes)}
             >
               {notes}
             </span>
-            <CommonModal.Window name="notes-open">
+            <InputModal.Window name="notes-open">
               <NotesInput
                 tasks={tasks}
                 list={list}
-                toggleNotes={toggleNotes}
                 setToggleNotes={setToggleNotes}
               />
-            </CommonModal.Window>
+            </InputModal.Window>
           </section>
           {/* Subtasks */}
-          <section className="pb-3 relative sm:py-2  ">
-            <h1 className="uppercase sm:py-2 lg:text-normal xl:font-semibold ">
-              Subtasks{' '}
-              <span className="text-xs lowercase font-light ">( max 3 )</span>
+          <section className=" relative space-y-2 ">
+            <h1 className="capitalize py-1 text-md font-medium ">
+              Subtasks <span className="text-xs lowercase ">(max 3)</span>
             </h1>
             {subtasks?.length > 0 && (
-              <ul className="rounded-xl sm:px-3 ">
+              <ul className="p-1 space-y-2 sm:space-y-3">
                 {subtasks.map((st, i) => (
-                  <li className="py-2" key={i}>
-                    <SubtaskTemplate st={st} tasks={tasks} list={list} />
-                  </li>
+                  // <li className="" key={i}>
+                  <SubtaskTemplate st={st} tasks={tasks} list={list} key={i} />
+                  // </li>
                 ))}
               </ul>
             )}
             <SubtaskInput tasks={tasks || {}} />
           </section>
-        </CommonModal>
+        </InputModal>
       </CalendarModal>
     </div>
   );

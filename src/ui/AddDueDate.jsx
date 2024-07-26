@@ -8,8 +8,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 import { useDispatch } from 'react-redux';
 import { addDueDate } from '../features/Tasks/taskSlice';
+import toast from 'react-hot-toast';
 
-function AddDueDate({ listId, id, setCalendarClose }) {
+function AddDueDate({ listId, id }) {
   const dispatch = useDispatch();
   const [selectedDateVal, setSelectedDateVal] = useState(new Date());
 
@@ -25,7 +26,7 @@ function AddDueDate({ listId, id, setCalendarClose }) {
     dispatch(
       addDueDate({ taskId: id, dueDate: format(selectedDateVal, 'dd/M/yyyy') })
     );
-    setCalendarClose((close) => !close);
+    toast.success('Due date added');
   }
 
   return (
