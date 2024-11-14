@@ -1,60 +1,67 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { selectAllTask, setReminder } from '../features/Tasks/taskSlice';
-import { useEffect } from 'react';
-import { setReminderInList } from '../features/Lists/listSlice';
-import toast from 'react-hot-toast';
-import { HiBellAlert } from 'react-icons/hi2';
+import { useEffect, useState } from 'react';
+import { useTask } from '../features/Tasks/useTask';
+import { Alert, Snackbar } from '@mui/material';
+import { format } from 'date-fns';
+// import { updateTask } from '../services/apiTasks';
 
 function GlobalReminder() {
-  const allTask = useSelector(selectAllTask);
-  const lists = useSelector((state) => state.lists.data);
+  const { data: tasks } = useTask();
+  const [matchedReminder, setMatchedReminder] = useState(false);
 
-  const newTaskInList = lists.flatMap((all) => all.tasks);
-  const comninedTask = allTask.concat(newTaskInList);
-
-  const set = new Set(comninedTask?.map((task) => task?.id));
-  const allTasks = Array.from(set, (id) =>
-    comninedTask.find((task) => task?.id === id)
-  );
-  const dispatch = useDispatch();
-
-  useEffect(
-    function () {
-      const checkReminder = setInterval(() => {
+  useEffect(() => {
+    // Function to check reminders and trigger notifications
+    const checkReminders = () => {
+      tasks?.forEach((reminder) => {
         const now = new Date();
-        allTasks?.map((remind) => {
-          const {
-            reminder,
-            remindDate,
-            remindTime,
-            dueDate,
-            desc,
-            listId,
-            id,
-          } = remind;
-          const [day, month, year] = remindDate?.split('/');
-          const timeString = remindTime;
-          const convertedDate = new Date(
-            `${year}-${month}-${day} ${timeString}`
-          );
-          if (reminder && now >= convertedDate) {
-            toast.error(`Reminder for ${desc} Due date on ${dueDate}`, {
-              icon: <HiBellAlert className="text-red-600" />,
-              position: 'top-right',
-              duration: 3,
-            });
-            dispatch(setReminderInList({ listId: listId, taskId: id }));
-            dispatch(setReminder({ listId: listId, taskId: id }));
-          }
-          return null;
-        });
-      }, 1000 * 10);
+        const reminderDT = new Date(reminder?.reminderDateTime);
+        // Check if current time matches the reminder time (down to the minute)
+        if (
+          reminder.isReminder &&
+          format(reminderDT, 'yyyy-MM-dd HH:mm') ===
+            format(now, 'yyyy-MM-dd HH:mm')
+        ) {
+          // Trigger the notification
+          setMatchedReminder(true);
+          // Remove the triggered reminder from the array
 
-      return () => clearInterval(checkReminder);
-    },
-    [allTasks, dispatch]
+          // OPTIONAL
+          // if (reminderDT.getSeconds() === now.getSeconds()) {
+          //   updateTask({
+          //     id: reminder?.id,
+          //     updates: { isReminder: false },
+          //   });
+          // }
+        }
+      });
+    };
+
+    // Set an interval to check reminders every 30 seconds
+    const interval = setInterval(checkReminders, 30000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
+  }, [tasks]);
+
+  return (
+    <Snackbar
+      open={matchedReminder}
+      autoHideDuration={6000}
+      onClose={() => setMatchedReminder(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+    >
+      <Alert
+        sx={{
+          width: { mobile: '100%', laptop: '35%' },
+        }}
+        severity="info"
+        variant="filled"
+        color="error"
+        onClose={() => setMatchedReminder(false)}
+      >
+        This is a success Alert inside a Snackbar!
+      </Alert>
+    </Snackbar>
   );
-  return null;
 }
 
 export default GlobalReminder;

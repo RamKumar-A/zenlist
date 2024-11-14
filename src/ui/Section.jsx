@@ -1,29 +1,65 @@
+import { Box, Stack, Typography } from '@mui/material';
 import SidebarModal from './SidebarModal';
 
-function Section({ children, title, isMyDay, listId }) {
+function Section({ children, title, isMyDay }) {
   return (
-    <section className="p-3 h-screen relative ">
-      <header
-        className={`${
-          isMyDay
-            ? 'w-full justify-center  '
-            : 'bg-gray-100 dark:bg-gray-950 dark:text-gray-300 text-xl rounded-full sm:text-2xl xl:w-[40%] h-[8vh]'
-        } relative flex items-center mb-2 `}
-      >
-        <h1
-          className={`${
-            isMyDay
-              ? 'w-full lg:w-3/4 bg-gray-100 dark:bg-gray-950 dark:text-gray-300 text-xl rounded-full sm:text-2xl h-[8vh]   '
-              : ' line-clamp-1'
-          } grid grid-flow-col px-5 font-semibold w-full content-center `}
-        >
-          <span>{title}</span>
-        </h1>
-        <SidebarModal />
-      </header>
+    <Stack
+      alignItems={{
+        laptop: isMyDay ? 'center' : 'flex-start',
+      }}
+      sx={{
+        width: '100%',
+        height: '100%',
+        position: 'relative',
+        py: { mobile: 1, laptop: 0 },
+      }}
+      spacing={1.5}
+    >
+      <Box
+        component="header"
+        sx={{
+          width: isMyDay
+            ? { mobile: '100%', laptop: '70%' }
+            : { desktop: '40%' },
+          bgcolor: 'background.paper',
 
-      <div>{children}</div>
-    </section>
+          height: { mobile: '2.8rem' },
+          display: 'flex',
+          alignItems: 'center',
+          position: 'relative',
+          p: 0.5,
+          borderRadius: 15,
+        }}
+      >
+        <Typography
+          component="h1"
+          sx={{
+            width: isMyDay ? { mobile: '100%', laptop: '100%' } : '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            px: 2,
+          }}
+          textAlign={'left'}
+          fontSize={{ mobile: 24, tablet: 26 }}
+          fontWeight={600}
+        >
+          {title}
+        </Typography>
+        <SidebarModal />
+      </Box>
+
+      <Box
+        component="section"
+        sx={{
+          width: '100%',
+          flex: 1,
+          overflow: 'auto',
+        }}
+      >
+        {children}
+      </Box>
+    </Stack>
   );
 }
 

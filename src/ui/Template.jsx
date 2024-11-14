@@ -1,196 +1,152 @@
-import {
-  HiBellAlert,
-  HiMiniExclamationCircle,
-  HiOutlineExclamationCircle,
-  HiOutlineXMark,
-} from 'react-icons/hi2';
-import TaskDetails from '../features/Tasks/TaskDetails';
-import DeleteTask from './DeleteTask';
-import { FaCodeBranch } from 'react-icons/fa6';
-import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
-import TaskAddInput from './TaskAddInput';
-import DetailsModal from '../context/DetailsModal';
-import InputModal from '../context/InputModal';
+import { IconButton, List, Modal, Paper, Stack } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
+import { HiXMark } from 'react-icons/hi2';
+import { useModal } from '../hooks/useModal';
+
+import TaskDetails from '../features/Tasks/TaskDetails';
+import TaskAddInput from './TaskAddInput';
 import EmptyTasks from './EmptyTasks';
+import TaskItems from './TaskItems';
 
 function Template({
   isAllTask,
   isImpTask,
-  isList,
   isTodayTask,
   tasks,
-  handleDelete,
   handleDetails,
-  handleImportant,
-  handleFinished,
   details,
-  detailsOpen,
-  listId,
 }) {
-  return (
-    <div className="w-full flex items-center justify-center gap-4 ">
-      <DetailsModal>
-        <div className=" w-full sm:h-[86dvh]  h-[86dvh] bg-gray-100 dark:bg-gray-950 rounded-3xl xl:w-1/2 relative  p-1 grid ">
-          <ul
-            className={`text-gray-950 dark:text-gray-200 overflow-y-auto  h-[75dvh] sm:h-[75dvh] space-y-3 p-1 ${
-              tasks.length <= 0 && 'grid'
-            } `}
-          >
-            <AnimatePresence mode="popLayout" initial={false}>
-              {tasks?.map((list, i) => (
-                <ListItem
-                  list={list}
-                  handleDelete={handleDelete}
-                  handleDetails={handleDetails}
-                  handleImportant={handleImportant}
-                  handleFinished={handleFinished}
-                  key={`${list?.id}`}
-                  detailsOpen={detailsOpen}
-                />
-              ))}
-            </AnimatePresence>
-            {tasks.length <= 0 && <EmptyTasks />}
-          </ul>
-          <div className=" rounded-2xl relative h-[8dvh] w-full flex  items-center justify-center ">
-            <TaskAddInput important={isImpTask} list={isList} listid={listId} />
-          </div>
-        </div>
-        <AnimatePresence>
-          {!isTodayTask && tasks?.length !== 0 && (
-            <motion.div
-              className="hidden bg-gray-100 dark:bg-gray-900 dark:text-gray-300 rounded-3xl xl:block xl:w-1/2 sm:h-[86dvh] overflow-y-auto origin-left "
-              initial={{ scale: 0 }}
-              exit={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.2 }}
-            >
-              <TaskDetails
-                details={details || {}}
-                allTask={isAllTask}
-                list={isList}
-                imp={isImpTask}
-                todayTask={isTodayTask}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+  const detailModal = useModal();
 
-        <DetailsModal.Window name={detailsOpen} todayTasks={isTodayTask}>
-          <div className="">
-            <TaskDetails
-              details={details || {}}
-              allTask={isAllTask}
-              list={isList}
-              imp={isImpTask}
-              todayTask={isTodayTask}
-            />
-          </div>
-        </DetailsModal.Window>
-      </DetailsModal>
-    </div>
-  );
-}
-
-function ListItem({
-  list,
-  handleDetails,
-  handleFinished,
-  handleDelete,
-  handleImportant,
-  detailsOpen,
-}) {
   return (
-    <motion.li
-      className={`h-16 bg-gray-200 dark:bg-gray-800 rounded-2xl px-2 relative flex items-center justify-center gap-1 cursor-pointer origin-right ${
-        list?.finished && 'brightness-110  dark:brightness-50'
-      }`}
-      onClick={() => handleDetails(list)}
-      initial={{ scale: 0, opacity: 1 }}
-      animate={{ scale: 1, opacity: list?.finished ? 0.4 : 1 }}
-      exit={{ scale: 0 }}
+    <Stack
+      component="div"
+      direction="row"
+      justifyContent="center"
+      alignItems="center"
+      spacing={3}
+      sx={{ width: '100%', height: '100%', overflow: 'hidden' }}
     >
-      <span className="  " onClick={() => handleFinished(list)}>
-        {list?.finished ? (
-          <BsCheckCircleFill className="text-green-600 " size={17} />
-        ) : (
-          <BsCircle className="" size={17} />
-        )}
-      </span>
-
-      <DetailsModal.Open opens={detailsOpen}>
-        <div className="w-full  ">
-          <span className={` ${list?.finished && 'line-through '} `}>
-            {list?.desc}
-          </span>
-          <div className=" pt-1 pl-1.5 text-[0.6rem] lg:flex items-center gap-3 ">
-            {list?.reminder && (
-              <motion.span
-                className="hidden lg:flex items-center"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-              >
-                <HiBellAlert className="text-red-700" />
-                <p>{list?.dueDate}</p>
-              </motion.span>
-            )}
-            {list?.subtasks.length > 0 && (
-              <motion.div
-                className=" font-extralight flex items-center gap-1 "
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-              >
-                <FaCodeBranch className="opacity-70 -rotate-90 " />
-                <p>
-                  <span>
-                    {
-                      list?.subtasks.filter((task) => task?.finished === true)
-                        .length
-                    }
-                  </span>{' '}
-                  / <span>{list?.subtasks.length}</span>
-                </p>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </DetailsModal.Open>
-
-      <span
-        onClick={() => handleImportant(list)}
-        className={`${
-          list?.finished && 'hidden'
-        } text-md bg-orange-400 text-white rounded-full `}
+      <Paper
+        component="div"
+        sx={{
+          width: { mobile: '100%', desktop: '50%' },
+          height: '100%',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          p: 1,
+          borderRadius: 3,
+        }}
       >
-        {list?.important ? (
-          <HiOutlineExclamationCircle className="" />
-        ) : (
-          <HiMiniExclamationCircle className="bg-orange-300 rounded-full" />
-        )}
-      </span>
-
-      <InputModal>
-        <InputModal.Open opens={`delete-${detailsOpen}`}>
-          <motion.button
-            className="text-gray-900 dark:text-white rounded-full p-1"
-            whileHover={{
-              backgroundColor: '#ff0000',
-              color: '#fff',
-              rotate: 360,
-            }}
-            onClick={() => handleDelete(list)}
+        <List
+          sx={{
+            width: '100%',
+            height: '100%',
+            position: 'relative',
+            overflowY: 'auto',
+            flex: 1,
+            maxHeight: 'calc(100vh - 3.5rem)',
+          }}
+          className="space-y-2"
+        >
+          <AnimatePresence initial={false}>
+            {tasks?.map((list, i) => (
+              <TaskItems
+                list={list}
+                handleDetails={handleDetails}
+                key={`${list?.id}`}
+                openModal={detailModal.openModal}
+              />
+            ))}
+          </AnimatePresence>
+          {tasks?.length <= 0 && <EmptyTasks />}
+        </List>
+        <Paper
+          variant="outlined"
+          sx={{
+            height: '3.5rem',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1,
+            position: 'relative',
+            borderColor: 'secondary.light',
+          }}
+        >
+          <TaskAddInput
+            isToday={isTodayTask || isAllTask}
+            important={isImpTask}
+          />
+        </Paper>
+      </Paper>
+      <AnimatePresence>
+        {!isTodayTask && tasks?.length !== 0 && (
+          <MotionPaper
+            className="hidden xl:block xl:w-1/2 sm:h-[86vh] rounded-md overflow-y-auto origin-left"
+            component="div"
+            elevation={6}
+            initial={{ scale: 0 }}
+            exit={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.2 }}
+            sx={{ borderRadius: 2 }}
           >
-            <HiOutlineXMark className="" />
-          </motion.button>
-        </InputModal.Open>
-        <InputModal.Window name={`delete-${detailsOpen}`}>
-          <DeleteTask task={list?.desc} handler={() => handleDelete(list)} />
-        </InputModal.Window>
-      </InputModal>
-    </motion.li>
+            <TaskDetails details={details || {}} />
+          </MotionPaper>
+        )}
+      </AnimatePresence>
+
+      <Modal
+        className={(isTodayTask ? '' : 'xl:hidden') + ' relative'}
+        open={detailModal.isOpen}
+        onClose={detailModal.closeModal}
+      >
+        <Paper
+          sx={{
+            position: 'absolute',
+            width: {
+              mobile: '95%',
+              tablet: '65%',
+              desktop: '40%',
+            },
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%,-50%)',
+            borderRadius: 2,
+          }}
+        >
+          <TaskDetails
+            details={details || {}}
+            closeModal={detailModal.closeModal}
+          />
+          <IconButton
+            size="small"
+            sx={{
+              bgcolor: 'primary.main',
+              color: 'primary.contrastText',
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              transform: {
+                mobile: 'translate(25%,-50%)',
+                desktop: 'translate(50%,-50%)',
+              },
+              '&:hover': {
+                backgroundColor: 'primary.dark',
+              },
+            }}
+            onClick={detailModal.closeModal}
+          >
+            <HiXMark />
+          </IconButton>
+        </Paper>
+      </Modal>
+    </Stack>
   );
 }
+
+const MotionPaper = motion(Paper);
 
 export default Template;

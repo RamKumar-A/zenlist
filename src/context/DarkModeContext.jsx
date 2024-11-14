@@ -1,37 +1,48 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { ThemeProvider } from '@emotion/react';
+import { createTheme } from '@mui/material';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createAppTheme } from '../helpers/theme';
 
 const DarkModeContext = createContext();
 
 function DarkModeProvider({ children }) {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const storedDarkMode = localStorage.getItem('darkMode');
-    return storedDarkMode
-      ? JSON.parse(storedDarkMode)
-      : window.matchMedia('prefers-color-scheme:dark').matches || false;
+  const [mode, setMode] = useState(() => {
+    const storedMode = localStorage.getItem('themeMode') || 'system';
+    return storedMode;
   });
 
-  useEffect(
-    function () {
-      if (isDarkMode) {
-        document.documentElement.classList.add('dark');
-        document.documentElement.classList.remove('light');
-      } else {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('light');
-      }
-    },
-    [isDarkMode]
-  );
+  useEffect(() => {
+    const prefersDarkmode = window.matchMedia(
+      '(prefers-color-scheme:dark)'
+    ).matches;
+    if (mode === 'system') {
+      setMode(prefersDarkmode ? 'dark' : 'light');
+    }
+  }, [mode]);
 
-  function toggleDarkMode() {
-    setIsDarkMode((isDark) => {
-      localStorage.setItem('darkMode', JSON.stringify(!isDark));
-      return !isDark;
-    });
+  function setTheme(newMode) {
+    setMode(newMode);
+    localStorage.setItem('themeMode', newMode);
   }
+
+  const theme = useMemo(() => {
+    const themeMode = createAppTheme(mode);
+    return createTheme({
+      ...themeMode,
+      breakpoints: {
+        values: {
+          mobile: 300,
+          tablet: 720,
+          laptop: 1024,
+          desktop: 1200,
+        },
+      },
+    });
+  }, [mode]);
+
   return (
-    <DarkModeContext.Provider value={{ isDarkMode, toggleDarkMode }}>
-      {children}
+    <DarkModeContext.Provider value={{ mode, setTheme }}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
     </DarkModeContext.Provider>
   );
 }
@@ -43,3 +54,34 @@ function useDarkMode() {
 }
 
 export { useDarkMode, DarkModeProvider };
+
+// useEffect(
+//   function () {
+//     function applyTheme(currentMode) {
+//       const prefersDark = window.matchMedia(
+//         'prefers-color-scheme:dark'
+//       ).matches;
+//       if (
+//         currentMode === 'dark' ||
+//         (currentMode === 'system' && prefersDark)
+//       ) {
+//         document.documentElement.classList.add('dark');
+//         document.documentElement.classList.remove('light');
+//       } else {
+//         document.documentElement.classList.remove('dark');
+//         document.documentElement.classList.add('light');
+//       }
+//     }
+//     applyTheme(mode);
+
+//     // Watch for system preference if in 'system' mode
+//     const mediaQuery = window.matchMedia('prefers-color-scheme:dark');
+//     const handleChange = () => applyTheme(mode);
+
+//     if (mode === 'system')
+//       mediaQuery.addEventListener('change', handleChange);
+
+//     return () => mediaQuery.removeEventListener('change', handleChange);
+//   },
+//   [mode]
+// );

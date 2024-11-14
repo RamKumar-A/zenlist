@@ -1,107 +1,90 @@
 import { NavLink } from 'react-router-dom';
 import User from '../features/Users/User';
-import {
-  HiOutlineCalendarDays,
-  HiOutlineExclamationCircle,
-} from 'react-icons/hi2';
+import { HiHashtag, HiOutlineCalendarDays } from 'react-icons/hi2';
 import Mylist from '../features/Lists/Mylist';
-import { useSelector } from 'react-redux';
-import {
-  selectAllTask,
-  selectImpTask,
-  selectTasks,
-} from '../features/Tasks/taskSlice';
+
 import { FaTasks } from 'react-icons/fa';
 import { MdOutlineDashboard } from 'react-icons/md';
-import { AnimatePresence } from 'framer-motion';
+import {
+  Avatar,
+  Box,
+  Divider,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material';
+import { useTask } from '../features/Tasks/useTask';
 
 function SideBarElements() {
-  const mydayTotal = useSelector(selectTasks);
-  const importantTask = useSelector(selectImpTask);
-  const allTask = useSelector(selectAllTask);
-  const lists = useSelector((state) => state.lists.data);
+  const { data: tasks } = useTask();
 
-  // to get the total length of allTasks (i.e (lists + allTask))
-
-  const newTaskInList = lists?.flatMap((all) => all?.tasks);
-  const combinedTask = allTask.concat(newTaskInList);
-  const set = new Set(combinedTask?.map((task) => task?.id));
-  const allTasks = Array.from(set, (id) =>
-    combinedTask?.find((task) => task?.id === id)
-  );
-
-  // to get the total length of ImportantTasks (i.e (lists.important + importantTask))
-
-  const impTaskInList = lists
-    .flatMap((all) => all.tasks)
-    .filter((task) => task.important);
-  const combinedImpTask = importantTask.concat(impTaskInList);
-  const setImp = new Set(combinedImpTask?.map((task) => task?.id));
-  const impTasks = Array.from(setImp, (id) =>
-    combinedImpTask.find((task) => task.id === id)
-  );
+  const importantTasks = tasks?.filter((task) => task.isImportant);
+  const todayTasks = tasks?.filter((task) => task.isToday);
 
   const datas = [
     {
       to: '/',
-      name: 'My Day',
-      length: mydayTotal,
+      text: 'My Day',
+      taskLength: todayTasks,
       icons: <HiOutlineCalendarDays />,
     },
     {
       to: '/importanttasks',
-      name: 'Important',
-      length: impTasks,
-      icons: <HiOutlineExclamationCircle />,
+      text: 'Important',
+      taskLength: importantTasks,
+      icons: <HiHashtag />,
     },
     {
       to: '/alltasks',
-      name: 'All Tasks',
-      length: allTasks,
+      text: 'All Tasks',
+      taskLength: tasks,
       icons: <FaTasks />,
     },
     {
       to: '/dashboard?task=today',
-      name: 'Dashboard',
-      length: '',
+      text: 'Dashboard',
       icons: <MdOutlineDashboard />,
     },
   ];
 
   return (
-    <>
-      <h1 className="text-left dark:text-gray-300 px-2 sm:px-6 py-5 md:py-2 flex items-center justify-center font-semibold gap-3 ">
-        <User />
-      </h1>
-      <AnimatePresence>
-        {datas.map((data) => (
-          <SideBarContent
-            to={data.to}
-            icon={data.icons}
-            tasklen={data.length}
-            key={data.to}
-          >
-            <p>{data.name}</p>
-          </SideBarContent>
-        ))}
-      </AnimatePresence>
+    <Box sx={{ px: { mobile: 1, tablet: 0 } }}>
+      <User />
 
-      <div className="px-5 ">
+      <List component="nav" sx={{ width: '100%' }}>
+        {datas?.map((item) => (
+          <ListItems items={item} key={item.text} />
+        ))}
+        <Divider />
         <Mylist />
-      </div>
-    </>
+      </List>
+    </Box>
   );
 }
 
-function SideBarContent({ to, children, icon, tasklen }) {
+function ListItems({ items }) {
   return (
-    <div className=" px-6 py-4 text-sm md:text-base ">
-      <NavLink to={to} className="flex items-center gap-3">
-        <span className="text-lg ">{icon}</span>
-        <span className=" ">{children}</span>
-        <span className="text-xs font-bold pl-5 ">{tasklen.length || ''}</span>
-      </NavLink>
-    </div>
+    <NavLink to={items?.to}>
+      <ListItem component="div" disablePadding sx={{ px: 1, py: 1, my: 1 }}>
+        <ListItemIcon sx={{ fontSize: 16, width: 'fit-content' }}>
+          <Avatar sx={{ color: 'text.primary', bgcolor: 'secondary.light' }}>
+            {items?.icons}
+          </Avatar>
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <Typography fontWeight={500} fontSize={16.5}>
+              {items?.text}
+            </Typography>
+          }
+        />
+        <Typography sx={{ whiteSpace: 'nowrap' }} fontSize={10}>
+          {items?.taskLength?.length}
+        </Typography>
+      </ListItem>
+    </NavLink>
   );
 }
 

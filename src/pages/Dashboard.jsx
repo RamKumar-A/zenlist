@@ -1,4 +1,4 @@
-import { DashboardProvider } from '../features/Dashboard/DashboardContext';
+import { DashboardProvider } from '../context/DashboardContext';
 import DashboardLayout from '../features/Dashboard/DashboardLayout';
 
 function Dashboard() {

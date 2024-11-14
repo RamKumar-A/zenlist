@@ -1,14 +1,16 @@
-// import styles from './Spinner.module.css';
+import { CircularProgress, Stack } from '@mui/material';
 
 function Spinner() {
-  // return (
-  //   <div className={styles.spinnerFullPage}>
-  //     <div className={styles.spinnerContainer}>
-  //       <div className={styles.loader}></div>
-  //     </div>
-  //   </div>
-  // );
-  return <div></div>;
+  return (
+    <Stack
+      width="100%"
+      height="100vh"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <CircularProgress />
+    </Stack>
+  );
 }
 
 export default Spinner;

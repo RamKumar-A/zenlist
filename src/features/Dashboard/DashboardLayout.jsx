@@ -1,14 +1,19 @@
+import { Box, Grid2 } from '@mui/material';
 import DashboardHeader from './DashboardHeader';
 import DashboardMain from './DashboardMain';
 import DashboardStats from './DashboardStats';
 
 function DashboardLayout() {
   return (
-    <main className="dark:bg-blue-700 px-3 py-3  overscroll-y-scroll h-full ">
-      <DashboardHeader />
-      <DashboardStats />
+    <Box className="space-y-5 h-full overflow-auto ">
+      <Box>
+        <DashboardHeader />
+      </Box>
+      <Grid2 container spacing={2}>
+        <DashboardStats />
+      </Grid2>
       <DashboardMain />
-    </main>
+    </Box>
   );
 }
 

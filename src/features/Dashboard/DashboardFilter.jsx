@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import Error from '../../ui/Error';
 import { motion } from 'framer-motion';
+import { Box, Button, Stack } from '@mui/material';
 
 function DashboardFilter() {
   return (
@@ -30,44 +31,58 @@ function Filter({ filterField, options }) {
   );
 
   return (
-    <div className=" flex items-center justify-evenly flex-wrap gap-2 ">
+    <Stack
+      direction="row"
+      alignItems="center"
+      flexWrap="wrap"
+      justifyContent={{ mobile: 'center', tablet: 'space-around' }}
+      className="h-full w-full"
+      gap={1}
+    >
       {isValidFilter ? (
         options.map((option) => (
-          <button
-            onClick={() => handleClick(option.value)}
-            disabled={option.value === currentFilter}
-            key={option.value}
-            className={`p-2 text-center text-sm font-medium  relative  ${
-              option.value === currentFilter
-                ? 'text-blue-700 dark:text-gray-100'
-                : ' '
-            } `}
-          >
-            {option.value === currentFilter && (
-              <motion.div
-                layoutId="active-pill"
-                className="absolute inset-0 bg-gray-100 dark:bg-gray-950  "
-                style={{ borderRadius: '4px' }}
-                transition={{ type: 'spring', duration: 0.5 }}
-              />
-            )}
-            <span className="relative tracking-wider z-10  ">
-              {option.label}
-            </span>
-          </button>
+          <Box key={option?.value}>
+            <Button
+              size="small"
+              disableRipple
+              sx={{
+                '&.MuiButton-root': {
+                  color:
+                    option.value === currentFilter
+                      ? 'primary.contrastText'
+                      : 'text.primary',
+                },
+              }}
+              onClick={() => handleClick(option.value)}
+              disabled={option.value === currentFilter}
+            >
+              {option.value === currentFilter && (
+                <MotionBox
+                  component="div"
+                  layoutId="active-pill"
+                  sx={{
+                    position: 'absolute',
+                    inset: '0px',
+                    bgcolor: 'primary.main',
+                  }}
+                  className=" "
+                  style={{ borderRadius: '4px' }}
+                  transition={{ type: 'spring', duration: 0.5 }}
+                />
+              )}
+              <span className="relative tracking-wider z-10  ">
+                {option.label}
+              </span>
+            </Button>
+          </Box>
         ))
       ) : (
         <Error />
       )}
-    </div>
+    </Stack>
   );
 }
 
-export default DashboardFilter;
+const MotionBox = motion(Box);
 
-// $;
-// {
-//   option.value === currentFilter
-//     ? 'bg-gray-100 dark:bg-gray-950 text-blue-700 dark:text-gray-100'
-//     : '';
-// }
+export default DashboardFilter;

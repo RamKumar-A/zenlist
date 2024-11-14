@@ -1,35 +1,63 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { addNotes } from '../features/Tasks/taskSlice';
-import { addNotesInList } from '../features/Lists/listSlice';
-import toast from 'react-hot-toast';
 
-function NotesInput({ tasks, list, setToggleNotes }) {
-  const { id, listId } = tasks;
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from '@mui/material';
+import { useUpdateTask } from '../features/Tasks/useUpdateTask';
+
+function NotesInput({ details, onClose, open }) {
   const [notes, setNotes] = useState('');
-  const dispatch = useDispatch();
+  const { id } = details || {};
+  const { updateTask, isUpdating } = useUpdateTask();
 
   function handleSubmit(e) {
     e.preventDefault();
-    dispatch(addNotesInList({ listId: listId, taskId: id, note: notes }));
-    dispatch(addNotes({ taskId: id, notes: notes }));
-    setToggleNotes(false);
-    toast.success('Note Added');
+    updateTask({
+      id,
+      updates: {
+        notes,
+      },
+    });
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="w-full  flex items-center justify-center  p-1 h-10 sm:h-14 lg:h-16 "
+    <Dialog
+      fullWidth
+      maxWidth="tablet"
+      PaperProps={{
+        component: 'form',
+        onSubmit: handleSubmit,
+      }}
+      onClose={onClose}
+      open={open}
     >
-      <input
-        type="text"
-        value={notes}
-        className="w-full border sm:w-1/2 dark:bg-gray-800 dark:text-gray-300 h-full pl-2  border-blue-900 outline-none rounded-lg "
-        onChange={(e) => setNotes(e.target.value)}
-        placeholder="Add Notes"
-      />
-    </form>
+      <DialogTitle>Add Notes</DialogTitle>
+      <DialogContent>
+        <TextField
+          className=""
+          onChange={(e) => setNotes(e.target.value)}
+          label="Add Notes"
+          variant="outlined"
+          disabled={isUpdating}
+          required
+          autoFocus
+          margin="dense"
+          fullWidth
+        />
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={onClose}>Cancel</Button>
+        <Button variant="contained" type="submit">
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 

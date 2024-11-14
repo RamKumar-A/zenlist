@@ -1,74 +1,66 @@
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
 import { HiOutlineXMark } from 'react-icons/hi2';
-import { useDispatch } from 'react-redux';
-import { deleteSubTask, finishedSubTask } from '../features/Tasks/taskSlice';
-import {
-  deleteSubtasksInList,
-  finishedSubtasksInList,
-} from '../features/Lists/listSlice';
+
 import { motion } from 'framer-motion';
+import { IconButton, ListItem, ListItemText, Typography } from '@mui/material';
+import { useUpdateSubtask } from '../features/Tasks/useUpdateSubtask';
+import { useDeleteSubtask } from '../features/Tasks/useDeleteSubtask';
 
-function SubtaskTemplate({ st, tasks }) {
-  const { listId, id } = tasks;
-  const dispatch = useDispatch();
+function SubtaskTemplate({ st }) {
+  const { updateSubTask, isUpdatingSubtask } = useUpdateSubtask();
+  const { deleteSubtask, isDeletingSubtask } = useDeleteSubtask();
   function handleDeleteSubTask() {
-    // toast.error('Subtask removed Successfully');
-    dispatch(
-      deleteSubtasksInList({
-        listId: listId,
-        taskId: id,
-        deleteId: st?.subTaskId,
-      })
-    );
-
-    dispatch(deleteSubTask({ taskId: id, deleteId: st?.subTaskId }));
+    deleteSubtask(st?.id);
   }
 
   function handleFinishedSubTask() {
-    dispatch(
-      finishedSubtasksInList({
-        taskId: id,
-        listId: listId,
-        finishedId: st?.subTaskId,
-      })
-    );
-    dispatch(finishedSubTask({ taskId: id, finishedId: st?.subTaskId }));
+    updateSubTask({
+      id: st?.id,
+      updates: {
+        isCompleted: !st?.isCompleted,
+      },
+    });
   }
 
-  // optional
-
-  // useEffect(
-  //   function () {
-  //     if (finished) handleFinishedSubTask();
-  //   },
-  //   [finished]
-  // );
-
   return (
-    <li className="text-sm py-1.5 px-3 flex items-center justify-between gap-2 border border-gray-300 dark:border-gray-800 rounded-xl">
-      <span className="cursor-pointer p-1" onClick={handleFinishedSubTask}>
-        {st?.finished ? (
-          <BsCheckCircleFill className="text-green-500" />
+    <ListItem
+      sx={{ bgcolor: 'secondary.light' }}
+      component="li"
+      className="h-8 rounded-md p-0.5"
+    >
+      <IconButton
+        className="cursor-pointer"
+        disabled={isUpdatingSubtask || isDeletingSubtask}
+        onClick={handleFinishedSubTask}
+      >
+        {st?.isCompleted ? (
+          <BsCheckCircleFill className="text-green-500" size={15} />
         ) : (
-          <BsCircle className="" />
+          <BsCircle className="" size={15} />
         )}
-      </span>
-      <span className=" w-full">{st?.desc}</span>
-      {st?.finished && (
-        <motion.span
-          className="rounded-full cursor-pointer p-1"
-          onClick={handleDeleteSubTask}
-          whileHover={{
-            backgroundColor: '#ff0000',
-            color: '#fff',
-            rotate: 180,
-          }}
-        >
-          <HiOutlineXMark size={14} />
-        </motion.span>
-      )}
-    </li>
+      </IconButton>
+      <ListItemText
+        primary={<Typography fontSize={15}>{st?.title}</Typography>}
+        className=" w-full"
+      />
+      <MotionIconButton
+        disabled={isUpdatingSubtask || isDeletingSubtask}
+        className="rounded-full cursor-pointer p-1"
+        onClick={handleDeleteSubTask}
+        whileHover={{
+          backgroundColor: '#ff0000',
+          color: '#fff',
+          rotate: 180,
+        }}
+        transition={{ duration: 0.2 }}
+        size="small"
+      >
+        <HiOutlineXMark size={14} />
+      </MotionIconButton>
+    </ListItem>
   );
 }
+
+const MotionIconButton = motion(IconButton);
 
 export default SubtaskTemplate;

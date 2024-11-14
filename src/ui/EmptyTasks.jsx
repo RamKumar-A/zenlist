@@ -1,9 +1,18 @@
+import { Stack, Typography } from '@mui/material';
+
 function EmptyTasks() {
   return (
-    <div className="w-full h-[200px] lg:h-[400px] flex flex-col items-center justify-center m-auto text-center ">
-      <h1 className="xl:text-xl font-medium p-2">YOUR HAVE NO TASKS</h1>
-      <p>Add Some Tasks To View</p>
-    </div>
+    <Stack alignItems="center" justifyContent="center" sx={{ height: '100%' }}>
+      <Typography
+        fontWeight={600}
+        textAlign="center"
+        variant="h5"
+        fontSize={'1.8rem'}
+      >
+        YOU HAVE NO TASKS
+      </Typography>
+      <Typography variant="p">Add Some Tasks To View</Typography>
+    </Stack>
   );
 }
 

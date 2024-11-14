@@ -4,54 +4,88 @@ import {
   MdOutlinePlaylistAddCheck,
   MdOutlinePlaylistRemove,
 } from 'react-icons/md';
-import { useDashboardTask } from './DashboardContext';
+import {
+  Avatar,
+  Grid2,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material';
+import { useDashboardTask } from '../../context/DashboardContext';
+import { isOverdue } from '../../helpers/isOverdue';
+
 function DashboardStats() {
-  const { filterTasks } = useDashboardTask();
+  const { allTask } = useDashboardTask();
 
-  const impTaskLen = filterTasks.filter((task) => task.important)?.length || 0;
+  const impTaskLen = allTask?.filter((task) => task.isImportant)?.length || 0;
   const finishedTaskLen =
-    filterTasks.filter((task) => task.finished)?.length || 0;
-  const unfinishedTaskLen =
-    filterTasks.filter((task) => !task.finished)?.length || 0;
+    allTask?.filter((task) => task.isCompleted)?.length || 0;
 
-  const filterTasksData = [
-    { title: 'Total Task', dataLength: filterTasks?.length, icon: <PiSigma /> },
+  const overdue =
+    allTask?.filter((task) => {
+      const overdue = isOverdue(task);
+      return overdue;
+    })?.length || 0;
+
+  const allTaskData = [
+    {
+      title: 'Total Task',
+      dataLength: allTask?.length || 0,
+      icon: <PiSigma size={25} />,
+    },
     {
       title: 'Important',
-      dataLength: impTaskLen,
-      icon: <MdLabelImportantOutline />,
+      dataLength: impTaskLen || 0,
+      icon: <MdLabelImportantOutline size={25} />,
     },
     {
       title: 'Finished',
       dataLength: finishedTaskLen,
-      icon: <MdOutlinePlaylistAddCheck />,
+      icon: <MdOutlinePlaylistAddCheck size={25} />,
     },
     {
-      title: 'Unfinished',
-      dataLength: unfinishedTaskLen,
-      icon: <MdOutlinePlaylistRemove />,
+      title: 'Ovedue',
+      dataLength: overdue,
+      icon: <MdOutlinePlaylistRemove size={25} />,
     },
   ];
 
-  return (
-    <section className=" grid grid-cols-2 gap-5 lg:grid-cols-4 py-4">
-      {filterTasksData.map(({ title, icon, dataLength }) => (
-        <article key={title}>
-          <div className="w-full h-16 sm:h-24 bg-gray-100  p-2 text-center flex items-center gap-3 dark:bg-gray-950 rounded-md ">
-            <div className=" p-2 sm:p-4 rounded-full  bg-blue-700 text-lg xl:text-2xl text-white">
-              {icon}
-            </div>
-            <div className="text-left text-xs sm:text-sm xl:text-md ">
-              <h1 className="dark:text-gray-300 pb-1">{title}</h1>
-              <span className="dark:text-gray-300 font-semibold">
-                {dataLength}
-              </span>
-            </div>
-          </div>
-        </article>
-      ))}
-    </section>
-  );
+  return allTaskData.map(({ title, icon, dataLength }) => (
+    <Grid2 key={title} size={{ mobile: 6, desktop: 3 }}>
+      <ListItem
+        sx={{
+          bgcolor: 'background.paper',
+          borderRadius: 2,
+          boxShadow: 5,
+        }}
+        className="space-x-1.5 md:space-x-3 lg:space-x-5"
+      >
+        <Avatar
+          sx={{
+            width: { mobile: '2.5rem', tablet: '3.5rem' },
+            height: { mobile: '2.5rem', tablet: '3.5rem' },
+          }}
+        >
+          {icon}
+        </Avatar>
+        <ListItemText
+          primary={
+            <Typography fontWeight={300} fontSize="0.9rem">
+              {title}
+            </Typography>
+          }
+          secondary={
+            <Typography
+              fontWeight={600}
+              fontSize={{ mobile: '1.5rem', tablet: '1.8rem' }}
+            >
+              {dataLength}
+            </Typography>
+          }
+        />
+      </ListItem>
+    </Grid2>
+  ));
 }
 
 export default DashboardStats;

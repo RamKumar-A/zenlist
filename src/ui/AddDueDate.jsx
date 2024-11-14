@@ -1,54 +1,64 @@
-import { format, subDays } from 'date-fns';
 import { useState } from 'react';
-import { addDueDateInList } from '../features/Lists/listSlice';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
-// CSS Modules, react-datepicker-cssmodules.css//
-import 'react-datepicker/dist/react-datepicker-cssmodules.css';
-import { useDispatch } from 'react-redux';
-import { addDueDate } from '../features/Tasks/taskSlice';
-import toast from 'react-hot-toast';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useUpdateTask } from '../features/Tasks/useUpdateTask';
+import { addDays } from 'date-fns';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-function AddDueDate({ listId, id }) {
-  const dispatch = useDispatch();
-  const [selectedDateVal, setSelectedDateVal] = useState(new Date());
+function AddDueDate({ details }) {
+  const { id, dueDate } = details || {};
+  const { updateTask, isUpdating, isToday } = useUpdateTask();
+  const [selectedDate, setSelectedDate] = useState(addDays(new Date(), 1));
 
-  function handleSubmitDueDate(e) {
+  function handleSubmit(e) {
     e.preventDefault();
-    dispatch(
-      addDueDateInList({
-        listId: listId,
-        taskId: id,
-        dueDate: format(selectedDateVal, 'dd/M/yyyy'),
-      })
-    );
-    dispatch(
-      addDueDate({ taskId: id, dueDate: format(selectedDateVal, 'dd/M/yyyy') })
-    );
-    toast.success('Due date added');
+    updateTask({
+      id: id,
+      updates: { dueDate: selectedDate },
+    });
   }
 
   return (
-    <form
-      className="px-2 flex items-center  gap-2 sm:gap-4"
-      onSubmit={handleSubmitDueDate}
+    <Stack
+      direction="row"
+      alignItems="center"
+      spacing={3}
+      component="form"
+      onSubmit={handleSubmit}
     >
-      <DatePicker
-        selected={selectedDateVal}
-        onChange={(date) => setSelectedDateVal(date)}
-        dateFormat="dd/M/yyyy"
-        minDate={subDays(new Date(), 0)}
-        className="dark:bg-gray-800 dark:text-gray-300 my-2 p-1 pl-3 border border-blue-700 rounded "
-        placeholderText="Select Due Date"
-        withPortal
-        portalId="custom-datepicker-portal"
-        required
+      <DateTimePicker
+        onChange={(date) => setSelectedDate(date)}
+        value={new Date(dueDate)}
+        slotProps={{
+          textField: {
+            size: 'small',
+            sx: {
+              '& .MuiInputBase-root': {
+                height: { mobile: '2rem', tablet: '3rem' },
+                fontSize: { mobile: 13, tablet: 16 },
+              },
+            },
+          },
+        }}
+        disabled={isUpdating || isToday}
       />
-      <button type="submit" className="bg-blue-700 text-gray-300 px-1 rounded">
-        Add
-      </button>
-    </form>
+      <Box>
+        <Button
+          size="small"
+          variant="contained"
+          type="submit"
+          disabled={isUpdating || isToday}
+        >
+          <Typography
+            whiteSpace="nowrap"
+            textTransform={'capitalize'}
+            fontSize={{ mobile: 12, tablet: 14 }}
+          >
+            Add dew Date
+          </Typography>
+        </Button>
+      </Box>
+    </Stack>
   );
 }
 

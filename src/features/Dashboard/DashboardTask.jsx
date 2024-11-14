@@ -1,120 +1,210 @@
-import { useDispatch } from 'react-redux';
-import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
-import { HiOutlineExclamationCircle, HiOutlineXMark } from 'react-icons/hi2';
+import { HiHashtag, HiOutlineXMark } from 'react-icons/hi2';
 
-import { useDashboardTask } from './DashboardContext';
-
-import {
-  deleteTask,
-  finishedTask,
-  importantTask,
-  markedImportantTask,
-} from '../Tasks/taskSlice';
-import {
-  deleteTaskInList,
-  finishedTaskInList,
-  importantTaskInList,
-} from '../Lists/listSlice';
 import EmptyTasks from '../../ui/EmptyTasks';
+import {
+  Box,
+  IconButton,
+  ListItem,
+  ListItemText,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import DeleteTask from '../../ui/DeleteTask';
+import { useModal } from '../../hooks/useModal';
+import { useUpdateTask } from '../Tasks/useUpdateTask';
+import { useDeleteTask } from '../Tasks/useDeleteTask';
+import { useDashboardTask } from '../../context/DashboardContext';
+import { isOverdue } from '../../helpers/isOverdue';
 
 function DashboardTask() {
-  const { filterTasks: tasks1 } = useDashboardTask();
-  const dispatch = useDispatch();
+  const { filterTask: tasks } = useDashboardTask();
 
-  const tasks = tasks1.sort((a, b) => {
-    if (a.finished && !b.finished) return 1;
-    if (!a.finished && b.finished) return -1;
-    return 0;
-  });
+  const { updateTask, isUpdating } = useUpdateTask();
+  const { deleteTask, isDeleting } = useDeleteTask();
+
+  function handleCompleted(list) {
+    updateTask({
+      id: list?.id,
+      updates: { isCompleted: !list?.isCompleted },
+    });
+  }
 
   function handleImportant(list) {
-    if (!list.important) toast.success('Task Marked as important');
-    dispatch(markedImportantTask(list.id));
-    dispatch(importantTask());
-    dispatch(
-      importantTaskInList({
-        listId: list.listId,
-        taskId: list.id,
-      })
-    );
-  }
-  function handleFinished(task) {
-    toast.success('Task Finished Successfully');
-    dispatch(finishedTask(task.id));
-    dispatch(finishedTaskInList({ listId: task.listId, taskId: task.id }));
+    updateTask({
+      id: list?.id,
+      updates: { isImportant: !list?.isImportant },
+    });
   }
 
-  function handleDelete(task) {
-    toast.error('Task Removed Successfully');
-    dispatch(deleteTask(task.id));
-    dispatch(deleteTaskInList({ listId: task.listId, taskId: task.id }));
+  function handleDelete(list) {
+    deleteTask(list?.id);
   }
+
+  const deleteDialog = useModal();
+  const isDisabled = isUpdating || isDeleting;
 
   return (
-    <div className="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-300 w-full   rounded-md overflow-y-auto py-5 px-4 grid gap-5 h-full content-start ">
-      <h1 className=" text-lg font-medium lg:text-xl flex justify-between items-center ">
-        <span>Tasks</span>
-        {/* <span className="text-xs cursor-pointer">Remove All</span> */}
-      </h1>
+    <Stack
+      sx={{
+        bgcolor: 'background.paper',
+        p: 1.5,
+        borderRadius: 3,
+        boxShadow: 4,
+      }}
+      className="w-full space-y-3 h-[70vh]"
+    >
+      <Typography variant="h5">Tasks</Typography>
       {tasks?.length !== 0 ? (
-        <ul className="space-y-3 overflow-y-auto">
+        <Box component="ul" className=" space-y-3 overflow-y-auto">
           <AnimatePresence>
             {tasks?.map((task) => (
-              <motion.li
-                key={task.id}
-                className={`bg-gray-200 dark:bg-gray-800 rounded-lg px-2 relative flex items-center justify-center gap-1 cursor-pointer h-10 origin-right ${
-                  task.finished &&
-                  'border-none  rounded-xl brightness-110 shadow-none opacity-40 dark:brightness-50'
-                }  `}
-                animate={{ scale: 1 }}
-                initial={{ scale: 0 }}
+              <MotionListItem
+                component="li"
+                initial={{ scale: 0, opacity: 1 }}
+                animate={{ scale: 1, opacity: task?.isCompleted ? 0.4 : 1 }}
                 exit={{ scale: 0 }}
+                className={`h-12 relative cursor-pointer space-x-1 origin-right ${
+                  task?.isCompleted && 'brightness-50'
+                }
+                ${isOverdue(task) && !task?.isCompleted && ' brightness-50'}`}
+                sx={{ bgcolor: 'secondary.main', borderRadius: 2 }}
+                key={'dashboard' + task?.id}
               >
-                <span
-                  className="cursor-pointer"
-                  onClick={() => handleFinished(task)}
+                <Tooltip
+                  title={task?.isCompleted ? 'unmark' : 'mark as finished'}
+                  arrow
                 >
-                  {task.finished ? (
-                    <BsCheckCircleFill size={17} className="text-green-500" />
-                  ) : (
-                    <BsCircle size={17} />
-                  )}
-                </span>
-                <span className="w-full text-sm md:text-sm ">{task.desc}</span>
-                <span
-                  onClick={() => handleImportant(task)}
-                  className={`${
-                    (task?.finished || !task?.important) && 'hidden'
-                  } text-md bg-orange-400 text-white rounded-full `}
-                >
-                  {task?.important && (
-                    <HiOutlineExclamationCircle className="" />
-                  )}
-                </span>
+                  <IconButton
+                    size="medium"
+                    sx={{
+                      '&.MuiIconButton-root:hover': {
+                        color: '#3cff00',
+                      },
+                      pointerEvents:
+                        isOverdue(task) && !task?.isCompleted ? 'none' : 'auto',
+                    }}
+                    onClick={() => handleCompleted(task)}
+                    disabled={isUpdating || isDeleting}
+                  >
+                    {task?.isCompleted ? (
+                      <BsCheckCircleFill
+                        className="text-green-600 "
+                        size={17}
+                      />
+                    ) : (
+                      <BsCircle className="" size={17} />
+                    )}
+                  </IconButton>
+                </Tooltip>
 
-                <motion.button
-                  className="p-1"
-                  onClick={() => handleDelete(task)}
-                  whileHover={{
-                    borderRadius: 9999,
-                    backgroundColor: '#ff0000',
-                    color: '#fff',
-                    rotate: 360,
-                  }}
-                >
-                  <HiOutlineXMark />
-                </motion.button>
-              </motion.li>
+                <TaskDescription task={task} />
+                <TaskAction
+                  task={task}
+                  handleImportant={handleImportant}
+                  handleDelete={handleDelete}
+                  isDisabled={isDisabled}
+                  deleteDialog={deleteDialog}
+                />
+              </MotionListItem>
             ))}
           </AnimatePresence>
-        </ul>
+        </Box>
       ) : (
         <EmptyTasks />
       )}
-    </div>
+    </Stack>
+  );
+}
+
+const MotionListItem = motion(ListItem);
+const MotionBox = motion(Box);
+const MotionIconButton = motion(IconButton);
+
+function TaskDescription({ task }) {
+  return (
+    <ListItemText
+      primary={
+        <Typography
+          variant="span"
+          sx={{
+            textDecoration: task?.isCompleted ? 'line-through' : 'normal',
+          }}
+          fontSize={18}
+          fontWeight={500}
+        >
+          {task?.description}
+        </Typography>
+      }
+    />
+  );
+}
+
+function TaskAction({
+  task,
+  handleImportant,
+  handleDelete,
+  deleteDialog,
+  isDisabled,
+}) {
+  return (
+    <Stack spacing={0.5} direction="row">
+      <Box>
+        <Tooltip
+          title={task?.isImportant ? 'unmark' : 'mark as important'}
+          arrow
+        >
+          <IconButton
+            size="small"
+            sx={(theme) => ({
+              '&.MuiIconButton-root': {
+                color: task?.isImportant
+                  ? '#ff5500'
+                  : theme.palette.text.primary,
+              },
+              pointerEvents:
+                isOverdue(task) && !task?.isCompleted ? 'none' : 'auto',
+            })}
+            onClick={() => handleImportant(task)}
+            disabled={isDisabled || task?.isCompleted}
+          >
+            <HiHashtag size={17} />
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      <MotionBox className="" onClick={deleteDialog.openModal}>
+        <Tooltip title="Delete" arrow>
+          <MotionIconButton
+            size="small"
+            whileHover={{
+              backgroundColor: '#ff0000',
+              rotate: 360,
+            }}
+            sx={(theme) => ({
+              '&.MuiIconButton-root': {
+                color: theme.palette.text.primary,
+              },
+              '&.MuiIconButton-root:hover': {
+                color: theme.palette.text.secondary,
+              },
+            })}
+            disabled={isDisabled}
+          >
+            <HiOutlineXMark className="" size={16} />
+          </MotionIconButton>
+        </Tooltip>
+      </MotionBox>
+      <DeleteTask
+        openModal={deleteDialog.isOpen}
+        onCloseModal={deleteDialog.closeModal}
+        handler={() => handleDelete(task)}
+        disabled={isDisabled}
+      />
+    </Stack>
   );
 }
 

@@ -1,5 +1,5 @@
+import { useUser } from '../features/Authentication/useUser';
 import MydayTasks from '../features/Tasks/MydayTasks';
-import { useUser } from '../features/Users/UserContext';
 import Section from '../ui/Section';
 
 function getGreetings() {
@@ -12,19 +12,19 @@ function getGreetings() {
 }
 
 function MyDayPage() {
-  const { username } = useUser();
+  const { user } = useUser();
+  const title = () => {
+    return (
+      <>
+        <span>Good {getGreetings()}</span>
+        <span className="text-gray-400 dark:text-gray-400 font-semibold capitalize max-sm:hidden ">
+          , {user.user_metadata.fullName}
+        </span>
+      </>
+    );
+  };
   return (
-    <Section
-      isMyDay={true}
-      title={
-        <>
-          <span>Good {getGreetings()}</span>
-          <span className="text-gray-400 dark:text-gray-400 font-semibold capitalize max-sm:hidden ">
-            , {username}
-          </span>
-        </>
-      }
-    >
+    <Section isMyDay={true} title={title()}>
       <MydayTasks />
     </Section>
   );

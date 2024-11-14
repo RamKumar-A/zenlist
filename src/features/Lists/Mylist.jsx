@@ -1,101 +1,126 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { FaRegRectangleList } from 'react-icons/fa6';
-
-import InputModal from '../../context/InputModal';
-import { addList, getList } from './listSlice';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Avatar,
+  Box,
+  Collapse,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material';
+import { HiChevronRight, HiPlus } from 'react-icons/hi2';
+
+import { useModal } from '../../hooks/useModal';
+import { useList } from './useList';
+import { useTask } from '../Tasks/useTask';
+import CreateListDialog from './CreateListDialog';
 
 function Mylist() {
-  const [inputValue, setInputValue] = useState('');
   const [toggleList, setToggleList] = useState(false);
 
-  const dispatch = useDispatch();
-  const lists = useSelector(getList);
+  const listDialog = useModal();
 
-  function handleChange(e) {
-    setInputValue(e.target.value);
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    toast.success('List added Successfully');
-    dispatch(addList({ name: inputValue }));
-    setInputValue('');
+  const { lists } = useList();
+  const { data } = useTask();
+  function getLength(listId) {
+    const tasksLength = data?.filter((d) => d.listId === listId)?.length;
+    return tasksLength;
   }
 
   return (
-    <section>
-      <header className="text-md py-5 font-semibold flex items-center justify-between gap-2">
-        <h1
-          className=" flex items-center gap-2 cursor-pointer"
+    <Box>
+      <ListItem disablePadding sx={{ px: 1, py: 1, my: 1 }}>
+        <ListItemIcon sx={{ fontSize: 16, width: 'fit-content' }}>
+          <Avatar sx={{ color: 'text.primary', bgcolor: 'secondary.light' }}>
+            <FaRegRectangleList size={18} />
+          </Avatar>
+        </ListItemIcon>
+        <ListItemText primary={<Typography>My List</Typography>} />
+        {toggleList ? (
+          <IconButton
+            size="small"
+            sx={{
+              px: 1.5,
+            }}
+            onClick={listDialog.openModal}
+          >
+            <HiPlus size={16} />
+          </IconButton>
+        ) : (
+          <Typography
+            sx={{ px: 1.5 }}
+            fontWeight={700}
+            variant="span"
+            fontSize={10}
+            className=""
+          >
+            {lists?.length}
+          </Typography>
+        )}
+        <IconButton
+          size="small"
+          sx={{}}
           onClick={() => setToggleList(!toggleList)}
         >
-          <FaRegRectangleList size={18} />
-          <span>My List</span>
-        </h1>
-        <InputModal>
-          <InputModal.Open opens="list-add-form">
-            <h1 className="pl-5 z-50 flex items-center">
-              {toggleList ? (
-                <span className=" cursor-pointer">+</span>
-              ) : (
-                <span className="text-xs">{lists.length}</span>
-              )}
-            </h1>
-          </InputModal.Open>
-          <InputModal.Window name={'list-add-form'}>
-            <form
-              onSubmit={handleSubmit}
-              className="w-full grid justify-items-center p-1 h-16  "
-            >
-              <input
-                type="text"
-                value={inputValue}
-                required
-                maxLength={16}
-                onChange={handleChange}
-                className="w-full h-10 lg:h-16 sm:w-1/2 dark:bg-gray-800 dark:text-gray-300 border rounded pl-2  border-blue-900 outline-none "
-                placeholder="Add List Name"
-              />
-            </form>
-          </InputModal.Window>
-        </InputModal>
-      </header>
-      <AnimatePresence>
-        {toggleList && (
-          <motion.ul
-            className="pb-5 px-2 overflow-x-hidden"
-            variants={containerVariants}
-            initial="hidden"
-            animate="animate"
-            exit="hidden"
-          >
-            {lists.map((list, i) => (
-              <motion.li
-                className="py-4 text-sm md:text-base rounded-full flex items-center gap-3 line-clamp-1 "
-                variants={childVariants}
-                key={i + list.name}
+          <HiChevronRight
+            size={18}
+            className={`${
+              toggleList ? 'rotate-90' : 'rotate-0'
+            } transition-transform duration-200`}
+          />
+        </IconButton>
+      </ListItem>
+      <CreateListDialog
+        open={listDialog.isOpen}
+        onClose={listDialog.closeModal}
+      />
+
+      <Collapse in={toggleList}>
+        <AnimatePresence>
+          {toggleList && (
+            <List sx={{ width: '100%', px: 2 }}>
+              <motion.div
+                className="pb-5 px-2 overflow-x-hidden"
+                variants={containerVariants}
+                initial="hidden"
+                animate="animate"
+                exit="hidden"
               >
-                <NavLink
-                  to={`/mylist/${list?.name}`}
-                  state={{ listName: list.name }}
-                >
-                  <span>{list.name}</span>
-                  <span className="text-xs pl-5 font-bold ">
-                    {list.tasks.length}
-                  </span>
-                </NavLink>
-              </motion.li>
-            ))}
-          </motion.ul>
-        )}
-      </AnimatePresence>
-    </section>
+                {lists.map((list, i) => (
+                  <motion.div
+                    className="line-clamp-1 "
+                    variants={childVariants}
+                    key={i + list?.name}
+                  >
+                    <NavLink
+                      to={`/mylist/${list?.name}`}
+                      state={{ listName: list?.name, listId: list?.id }}
+                    >
+                      <ListItem disablePadding sx={{ px: 1, py: 1, my: 1 }}>
+                        <ListItemText
+                          primary={<Typography>{list?.name}</Typography>}
+                        />
+                        <Typography sx={{ whiteSpace: 'nowrap' }} fontSize={10}>
+                          {getLength(list?.id)}
+                        </Typography>
+                      </ListItem>
+                    </NavLink>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </List>
+          )}
+        </AnimatePresence>
+      </Collapse>
+    </Box>
   );
 }
+
 const containerVariants = {
   animate: {
     opacity: 1,
@@ -120,19 +145,3 @@ const childVariants = {
 };
 
 export default Mylist;
-
-// <motion.li
-//   className="py-4 text-sm md:text-base rounded-full flex items-center gap-3 line-clamp-1 "
-//   key={i + list.name}
-//   variants={childVariants}
-// >
-//   <NavLink
-//     to={`/mylist/${list?.name}`}
-//     state={{ listName: list.name }}
-//   >
-//     <span>{list.name}</span>
-//     <span className="text-xs pl-5 font-bold ">
-//       {list.tasks.length}
-//     </span>
-//   </NavLink>
-// </motion.li>
