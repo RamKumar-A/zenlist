@@ -57,7 +57,6 @@ function TaskDetails({ closeModal }) {
   }
 
   const overdue = isOverdue(detail?.dueDate || null);
-  console.log(detail?.dueDate);
   return (
     <>
       <Box
