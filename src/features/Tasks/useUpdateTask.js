@@ -7,7 +7,6 @@ export function useUpdateTask() {
   const { mutate: updateTask, isPending: isUpdating } = useMutation({
     mutationFn: ({ id, updates }) => updateTaskApi(id, updates),
     onSuccess: (data, { id, updates }) => {
-      console.log(updates);
       queryClient.invalidateQueries({
         queryKey: ['tasks'],
       });

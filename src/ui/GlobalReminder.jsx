@@ -58,7 +58,7 @@ function GlobalReminder() {
         color="error"
         onClose={() => setMatchedReminder(false)}
       >
-        This is a success Alert inside a Snackbar!
+        Reminder
       </Alert>
     </Snackbar>
   );
