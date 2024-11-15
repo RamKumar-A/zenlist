@@ -3,7 +3,6 @@ import { format } from 'date-fns';
 // export function isOverdue(task = {}) {
 export function isOverdue(dueDate = null) {
   const now = new Date();
-  console.log(dueDate);
   const taskDueDate = new Date(dueDate);
   if (isNaN(taskDueDate)) {
     console.error('Invalid task due date:', dueDate);
