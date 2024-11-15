@@ -46,7 +46,7 @@ function TaskDetails({ closeModal }) {
   function handleFinished() {
     updateTask({
       id: detail?.id,
-      updates: { isCompleted: !details?.isCompleted },
+      updates: { isCompleted: !detail?.isCompleted },
     });
   }
 
@@ -56,17 +56,17 @@ function TaskDetails({ closeModal }) {
     closeModal(false);
   }
 
-  const overdue = isOverdue(detail || {});
-
+  const overdue = isOverdue(detail?.dueDate || null);
+  console.log(detail?.dueDate);
   return (
     <>
       <Box
         sx={{ width: '100%', p: 2.5, position: 'relative', borderRadius: 2 }}
         className={`space-y-4  ${
-          (details?.isCompleted ||
+          (detail?.isCompleted ||
             isUpdating ||
             isDeletingTask ||
-            !details?.description ||
+            !detail?.description ||
             overdue) &&
           'opacity-70 pointer-events-none'
         } 
@@ -89,7 +89,7 @@ function TaskDetails({ closeModal }) {
             <IconButton
               onClick={handleFinished}
               className={`cursor-pointer ${
-                details?.isCompleted && 'pointer-events-auto visible  '
+                detail?.isCompleted && 'pointer-events-auto visible  '
               } `}
               sx={{
                 '&.MuiIconButton-root:hover': {
@@ -97,7 +97,7 @@ function TaskDetails({ closeModal }) {
                 },
               }}
             >
-              {details?.isCompleted ? (
+              {detail?.isCompleted ? (
                 <BsCheckCircleFill size={14} />
               ) : (
                 <BsCircle size={14} />

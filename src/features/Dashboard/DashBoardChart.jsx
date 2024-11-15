@@ -8,7 +8,7 @@ import { isOverdue } from '../../helpers/isOverdue';
 function prepareData(tasks) {
   const overdue =
     tasks?.filter((task) => {
-      const overdue = isOverdue(task);
+      const overdue = isOverdue(task?.dueDate);
       return overdue;
     })?.length || 0;
 

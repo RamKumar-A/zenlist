@@ -1,14 +1,13 @@
 import { format } from 'date-fns';
 
-export function isOverdue(task) {
+// export function isOverdue(task = {}) {
+export function isOverdue(dueDate = null) {
   const now = new Date();
-  const taskDueDate = new Date(task?.dueDate);
-  now.setHours(23, 59, 0, 0);
+  console.log(dueDate);
+  const taskDueDate = new Date(dueDate);
   if (isNaN(taskDueDate)) {
-    console.error('Invalid task due date:', task?.dueDate);
+    console.error('Invalid task due date:', dueDate);
     return false;
   }
-  return (
-    format(now, 'yyyy-MM-dd HH:mm') > format(taskDueDate, 'yyyy-MM-dd HH:mm')
-  );
+  return format(now, 'yyyy-MM-dd') > format(taskDueDate, 'yyyy-MM-dd');
 }

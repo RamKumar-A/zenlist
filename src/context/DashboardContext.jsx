@@ -20,7 +20,7 @@ function DashboardProvider({ children }) {
     const tomorrow = addDays(today, 1);
 
     return allTask?.filter((task) => {
-      const taskDueDate = new Date(task.dueDate);
+      const taskDueDate = new Date(task?.dueDate);
       // console.log(
       //   format(taskDueDate, 'yyyy-MM-dd') === format(tomorrow, 'yyyy-MM-dd')
       // );

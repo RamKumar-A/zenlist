@@ -41,7 +41,7 @@ function TaskItems({ list, openModal }) {
     deleteTask(list?.id);
   }
 
-  const overdue = isOverdue(list);
+  const overdue = isOverdue(list?.dueDate);
   const isDisabled = isUpdating || isDeleting;
 
   return (
@@ -168,7 +168,7 @@ function TaskDescription({ handleDetails, openModal, list }) {
 }
 
 function TaskAction({ list, handleImportant, isDisabled, deleteModal }) {
-  const overdue = isOverdue(list);
+  const overdue = isOverdue(list?.dueDate);
   return (
     <Stack spacing={0.5} direction="row">
       <Box

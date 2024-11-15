@@ -23,7 +23,7 @@ function DashboardStats() {
 
   const overdue =
     allTask?.filter((task) => {
-      const overdue = isOverdue(task);
+      const overdue = isOverdue(task?.dueDate);
       return overdue;
     })?.length || 0;
 

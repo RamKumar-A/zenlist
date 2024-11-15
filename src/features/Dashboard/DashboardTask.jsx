@@ -22,7 +22,6 @@ import { isOverdue } from '../../helpers/isOverdue';
 
 function DashboardTask() {
   const { filterTask: tasks } = useDashboardTask();
-
   const { updateTask, isUpdating } = useUpdateTask();
   const { deleteTask, isDeleting } = useDeleteTask();
 
@@ -70,7 +69,11 @@ function DashboardTask() {
                 className={`h-12 relative cursor-pointer space-x-1 origin-right ${
                   task?.isCompleted && 'brightness-50'
                 }
-                ${isOverdue(task) && !task?.isCompleted && ' brightness-50'}`}
+                ${
+                  isOverdue(task?.dueDate) &&
+                  !task?.isCompleted &&
+                  ' brightness-50'
+                }`}
                 sx={{ bgcolor: 'secondary.main', borderRadius: 2 }}
                 key={'dashboard' + task?.id}
               >
@@ -85,7 +88,9 @@ function DashboardTask() {
                         color: '#3cff00',
                       },
                       pointerEvents:
-                        isOverdue(task) && !task?.isCompleted ? 'none' : 'auto',
+                        isOverdue(task?.dueDate) && !task?.isCompleted
+                          ? 'none'
+                          : 'auto',
                     }}
                     onClick={() => handleCompleted(task)}
                     disabled={isUpdating || isDeleting}
@@ -133,8 +138,7 @@ function TaskDescription({ task }) {
           sx={{
             textDecoration: task?.isCompleted ? 'line-through' : 'normal',
           }}
-          fontSize={18}
-          fontWeight={500}
+          fontSize={{ mobile: 14, tablet: 17 }}
         >
           {task?.description}
         </Typography>
@@ -166,7 +170,9 @@ function TaskAction({
                   : theme.palette.text.primary,
               },
               pointerEvents:
-                isOverdue(task) && !task?.isCompleted ? 'none' : 'auto',
+                isOverdue(task?.dueDate) && !task?.isCompleted
+                  ? 'none'
+                  : 'auto',
             })}
             onClick={() => handleImportant(task)}
             disabled={isDisabled || task?.isCompleted}
