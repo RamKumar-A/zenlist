@@ -7,7 +7,7 @@ function ImportantTasks() {
   const [details, setDetails] = useState(null);
 
   const { data } = useTask();
-  const tasks = data?.filter((d) => d.isImportant);
+  const tasks = data?.filter((d) => d?.isImportant);
 
   function handleDetails(list) {
     setDetails(list);

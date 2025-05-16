@@ -8,7 +8,7 @@ function List() {
   const { listId } = location.state;
 
   const { data } = useTask();
-  const tasks = data?.filter((d) => d.listId === listId);
+  const tasks = data?.filter((d) => d?.listId === listId);
 
   return <Template tasks={tasks} />;
 }

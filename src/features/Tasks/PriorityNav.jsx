@@ -24,7 +24,7 @@ function PriorityNav() {
   const { data } = useTask();
   function getLength(priority) {
     const tasksLength = data?.filter(
-      (d) => d.priority === priority?.toLowerCase()
+      (d) => d?.priority === priority?.toLowerCase()
     )?.length;
     return tasksLength;
   }

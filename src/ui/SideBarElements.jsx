@@ -22,7 +22,7 @@ import { isOverdue } from '../helpers/isOverdue';
 function SideBarElements() {
   const { data: tasks } = useTask();
 
-  const importantTasks = tasks?.filter((task) => task.isImportant);
+  const importantTasks = tasks?.filter((task) => task?.isImportant);
 
   const todayTasks = tasks?.filter((task) => {
     const overdue = isOverdue(task?.dueDate);

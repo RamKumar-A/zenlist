@@ -6,7 +6,7 @@ function Priority() {
   const params = useParams();
   const { data } = useTask();
   const priority = params.priorityTag.toLowerCase();
-  const tasks = data?.filter((d) => d.priority === priority);
+  const tasks = data?.filter((d) => d?.priority === priority);
   return (
     <Template
       tasks={tasks}
