@@ -6,40 +6,29 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
-import { useState } from 'react';
-import DeleteToast from './DeleteToast';
 
 function DeleteTask({
   disabled,
   task = 'this',
-  openModal,
-  onCloseModal,
+  open = false,
+  onClose,
   handler,
 }) {
-  const [deleted, setDeleted] = useState(false);
   return (
     <>
-      <Dialog
-        open={openModal}
-        onClose={onCloseModal}
-        maxWidth="mobile"
-        fullWidth
-      >
+      <Dialog open={open} onClose={onClose} maxWidth="mobile" fullWidth>
         <DialogTitle>Confirm Delete Task</DialogTitle>
-        <DialogContent>
-          <DialogContentText color="text.default">
-            Are you sure want to delete {task}.
+        <DialogContent dividers>
+          <DialogContentText color="text.default" fontSize={14}>
+            Are you sure want to delete {task}?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onCloseModal} disabled={disabled}>
+          <Button onClick={onClose} disabled={disabled}>
             Cancel
           </Button>
           <Button
-            onClick={() => {
-              handler();
-              setDeleted(true);
-            }}
+            onClick={() => handler()}
             disabled={disabled}
             variant="contained"
             color="error"
@@ -49,7 +38,6 @@ function DeleteTask({
           </Button>
         </DialogActions>
       </Dialog>
-      <DeleteToast open={deleted} onClose={() => setDeleted(false)} />
     </>
   );
 }

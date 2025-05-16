@@ -5,8 +5,8 @@ import { useLogin } from './useLogin';
 import Spinner from '../../ui/Spinner';
 
 function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('example@gmail.com');
+  const [password, setPassword] = useState('test1234');
   const { login, isLogging } = useLogin();
   function handleSubmit(e) {
     e.preventDefault();
@@ -41,11 +41,7 @@ function LoginForm() {
         className="space-y-5 p-5"
       >
         <Box className="w-12 flex items-center justify-center">
-          <img
-            src="../../android-chrome-512x512.png"
-            alt="Logo"
-            className="w-full rounded"
-          />
+          <img src="/logo.png" alt="Logo" className="w-full rounded" />
         </Box>
         <Box sx={{ textAlign: 'left', py: 2 }}>
           <Typography
@@ -62,15 +58,17 @@ function LoginForm() {
         <Box className="space-y-5">
           <Stack spacing={2} component="form" onSubmit={handleSubmit}>
             <TextField
-              label="Email"
+              // label="Email"
               size="small"
               required
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
-              label="Password"
+              // label="Password"
               size="small"
               required
+              defaultValue={password}
               type="password"
               onChange={(e) => setPassword(e.target.value)}
             />

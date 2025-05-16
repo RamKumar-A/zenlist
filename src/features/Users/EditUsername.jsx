@@ -14,7 +14,7 @@ function EditUsername() {
   return (
     <>
       <ListItem>
-        <ListItemButton onClick={editDialog.openModal}>
+        <ListItemButton onClick={editDialog.onOpen}>
           <ListItemIcon>
             <Avatar>
               <HiOutlinePencilSquare />
@@ -25,7 +25,7 @@ function EditUsername() {
       </ListItem>
       <EditUsernameDialog
         open={editDialog.isOpen}
-        handleClose={editDialog.closeModal}
+        handleClose={editDialog.onClose}
       />
     </>
   );

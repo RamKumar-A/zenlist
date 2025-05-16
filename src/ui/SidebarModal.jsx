@@ -12,7 +12,7 @@ function SidebarModal() {
   }
 
   return (
-    <Box className="md:hidden">
+    <Box sx={{ display: { tablet: 'none' } }}>
       <IconButton
         variant="contained"
         sx={{ bgcolor: 'primary.main', color: 'text.secondary' }}

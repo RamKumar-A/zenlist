@@ -2,9 +2,11 @@ import { useParams } from 'react-router';
 
 import {
   Box,
+  Button,
   IconButton,
   List,
   Stack,
+  TextareaAutosize,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -13,11 +15,10 @@ import { useUpdateTask } from './useUpdateTask';
 import { useDeleteTask } from './useDeleteTask';
 
 import { BsCheckCircleFill, BsCircle } from 'react-icons/bs';
-import { HiHashtag, HiMiniPencil, HiTrash } from 'react-icons/hi2';
+import { HiHashtag, HiPlusCircle, HiTrash } from 'react-icons/hi2';
 
 import AddDueDate from '../../ui/AddDueDate';
 
-import NotesInput from '../../ui/NotesInput';
 import SubtaskTemplate from '../../ui/SubtaskTemplate';
 import SubtaskInput from '../../ui/SubtaskInput';
 import DeleteTask from '../../ui/DeleteTask';
@@ -27,21 +28,44 @@ import { useDetails } from '../../context/DetailsContext';
 import { useEffect, useState } from 'react';
 import { useTask } from './useTask';
 import { isOverdue } from '../../helpers/isOverdue';
+import { addDays, addMinutes } from 'date-fns';
+import toast from 'react-hot-toast';
+import { MdLabelImportant } from 'react-icons/md';
+import { getPriorityColor } from '../../helpers/helpers';
+import SelectPriority from '../../ui/SelectPriority';
 
 function TaskDetails({ closeModal }) {
-  const { details } = useDetails();
   const params = useParams();
-  const deleteDialog = useModal();
-  const notesDialog = useModal();
   const { data: tasks } = useTask();
-  const { updateTask, isUpdating } = useUpdateTask();
-  const { deleteTask, isDeletingTask } = useDeleteTask();
+  const { details } = useDetails();
   const [detail, setDetail] = useState(null);
+
+  const deleteDialog = useModal();
+  const priorityDialog = useModal();
+
+  const [reminderDateTime, setReminderDateTime] = useState(
+    addMinutes(new Date(), 5)
+  );
+  const [isReminder, setIsReminder] = useState(details?.isReminder || false);
+  const [notes, setNotes] = useState(detail?.notes);
+  const [selectedDate, setSelectedDate] = useState(addDays(new Date(), 1));
+
+  const { deleteTask, isDeletingTask } = useDeleteTask();
+  const { updateTask, isUpdating, isToday } = useUpdateTask();
 
   useEffect(() => {
     const d = tasks.find((d) => d.id === details?.id);
     setDetail(d);
   }, [tasks, details]);
+
+  useEffect(() => {
+    if (detail?.isReminder !== undefined) {
+      setIsReminder(detail?.isReminder);
+    }
+    if (new Date(reminderDateTime) < new Date()) {
+      setIsReminder(false);
+    }
+  }, [details, reminderDateTime, detail?.isReminder]);
 
   function handleFinished() {
     updateTask({
@@ -51,9 +75,32 @@ function TaskDetails({ closeModal }) {
   }
 
   function handleDelete() {
-    deleteTask(detail?.id);
-    deleteDialog.closeModal();
+    deleteTask(detail?.id, {
+      onSuccess: () => toast.success('task deleted'),
+    });
+    deleteDialog.onClose();
     closeModal(false);
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    updateTask(
+      {
+        id: detail?.id,
+        updates: {
+          notes,
+          isReminder: isReminder,
+          reminderDateTime,
+          dueDate: selectedDate,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success();
+        },
+      }
+    );
   }
 
   const overdue = isOverdue(detail?.dueDate || null);
@@ -71,134 +118,177 @@ function TaskDetails({ closeModal }) {
         } 
       `}
       >
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          className=""
-        >
-          <Typography
-            fontSize={'0.7rem'}
-            fontWeight={300}
-            sx={{ opacity: '0.6' }}
+        <Box>
+          {/* <Box> */}
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            className=""
           >
-            Mylist &#12297;{params?.list || 'Personal'}
-          </Typography>
-          <Stack className="" direction="row">
-            <IconButton
-              onClick={handleFinished}
-              className={`cursor-pointer ${
-                detail?.isCompleted && 'pointer-events-auto visible  '
-              } `}
-              sx={{
-                '&.MuiIconButton-root:hover': {
-                  color: '#3cff00',
-                },
-              }}
+            <Typography
+              fontSize={'0.7rem'}
+              fontWeight={300}
+              sx={{ opacity: '0.6' }}
             >
-              {detail?.isCompleted ? (
-                <BsCheckCircleFill size={14} />
-              ) : (
-                <BsCircle size={14} />
-              )}
-            </IconButton>
-            <Tooltip title="Delete" arrow>
+              Mylist &#12297;{params?.list || 'Personal'}
+            </Typography>
+            <Stack className="" direction="row">
               <IconButton
+                onClick={handleFinished}
                 className={`cursor-pointer ${
-                  (detail?.isCompleted || overdue) &&
-                  'pointer-events-auto visible '
+                  detail?.isCompleted && 'pointer-events-auto visible  '
                 } `}
                 sx={{
                   '&.MuiIconButton-root:hover': {
-                    color: '#fff',
-                    backgroundColor: '#ff0f00',
+                    color: '#3cff00',
                   },
                 }}
-                onClick={deleteDialog.openModal}
               >
-                <HiTrash size={14} />
+                {detail?.isCompleted ? (
+                  <BsCheckCircleFill size={14} />
+                ) : (
+                  <BsCircle size={14} />
+                )}
               </IconButton>
-            </Tooltip>
+              <Tooltip title="Delete" arrow>
+                <IconButton
+                  className={`cursor-pointer ${
+                    (detail?.isCompleted || overdue) &&
+                    'pointer-events-auto visible '
+                  } `}
+                  sx={{
+                    '&.MuiIconButton-root:hover': {
+                      color: '#fff',
+                      backgroundColor: '#ff0f00',
+                    },
+                  }}
+                  onClick={deleteDialog.onOpen}
+                >
+                  <HiTrash size={14} />
+                </IconButton>
+              </Tooltip>
 
-            {/* <DeleteToast open={deleted} onClose={() => setDeleted(false)} /> */}
+              {/* <DeleteToast open={deleted} onClose={() => setDeleted(false)} /> */}
+            </Stack>
           </Stack>
-        </Stack>
-        <Typography
-          fontSize={{ mobile: 20, laptop: 27 }}
-          fontWeight={600}
-          variant="h2"
-        >
-          <span>{detail?.description || 'Click the task to view'} </span>
-          {detail?.isImportant && (
-            <IconButton
+          <Box
+            sx={{ fontSize: 14, color: getPriorityColor(detail?.priority) }}
+            className=" mt-3 cursor-pointer"
+          >
+            <Button
+              startIcon={<HiHashtag />}
+              endIcon={<HiPlusCircle className="" />}
+              onClick={() => priorityDialog.onOpen()}
               sx={{
-                '&.MuiIconButton-root': {
-                  color: '#ff5500',
-                },
+                fontSize: 14,
+                color: getPriorityColor(detail?.priority),
+                textTransform: 'capitalize',
               }}
-              className="pointer-events-none"
+              variant="outlined"
+              color={getPriorityColor(detail?.priority)}
               size="small"
             >
-              <HiHashtag />
-            </IconButton>
-          )}
-        </Typography>
-        <Box className="space-y-3">
-          <Reminder details={detail} />
-          <AddDueDate details={detail} />
-        </Box>
-        {/* Notes */}
-        <Box className="space-y-3">
-          <Stack direction="row" alignItems="center" spacing={1.5}>
-            <Typography fontSize={18} fontWeight={500}>
-              Notes
-            </Typography>
-            <IconButton
-              className=""
-              color="primary"
-              onClick={notesDialog.openModal}
-            >
-              <HiMiniPencil size={14} />
-            </IconButton>
-          </Stack>
-          {detail?.notes && (
+              {detail?.priority}
+            </Button>
+          </Box>
+          <Box component="form" onSubmit={handleSubmit} className="space-y-2">
             <Typography
-              fontSize={14}
-              fontWeight={500}
-              variant="span"
-              className="border py-0.5 px-2 line-clamp-1 capitalize rounded"
+              fontSize={{ mobile: 20, laptop: 27 }}
+              fontWeight={600}
+              variant="h2"
+              py={2}
             >
-              {detail?.notes}
+              <span>{detail?.description || 'Click the task to view'} </span>
+              {detail?.isImportant && (
+                <IconButton
+                  sx={{
+                    '&.MuiIconButton-root': {
+                      color: '#ff5500',
+                    },
+                  }}
+                  className="pointer-events-none"
+                  size="small"
+                >
+                  <MdLabelImportant />
+                </IconButton>
+              )}
             </Typography>
-          )}
+            <Box className="space-y-3">
+              <Reminder
+                details={detail}
+                updateTask={updateTask}
+                isReminder={isReminder}
+                isUpdating={isUpdating}
+                setIsReminder={setIsReminder}
+                setReminderDateTime={setReminderDateTime}
+                reminderDateTime={reminderDateTime}
+              />
+              <AddDueDate
+                updateTask={updateTask}
+                details={detail}
+                isToday={isToday}
+                isUpdating={isUpdating}
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+              />
+            </Box>
 
-          <NotesInput
-            open={notesDialog.isOpen}
-            onClose={notesDialog.closeModal}
-            details={detail}
-          />
-        </Box>
+            {/* Notes */}
+            <Box className="space-y-3">
+              <Typography fontSize={18} fontWeight={500} py={2}>
+                Notes
+              </Typography>
 
-        {/* Subtasks */}
-        <Box className="space-y-3">
-          <Typography fontSize={18} fontWeight={500}>
-            Subtasks{' '}
-            <span className="text-xs lowercase font-normal ">(max 3)</span>
-          </Typography>
-          {detail?.subtasks?.length > 0 && (
-            <List component="ul" className="space-y-1 w-3/4">
-              {detail?.subtasks.map((st) => (
-                <SubtaskTemplate st={st} key={st.id} />
-              ))}
-            </List>
-          )}
-          <SubtaskInput details={detail} />
+              <TextareaAutosize
+                id={detail?.id}
+                style={{
+                  resize: 'none',
+                }}
+                className="border border-gray-600/50 w-full p-1 text-sm outline-none "
+                onChange={(e) => setNotes(e.target.value)}
+                defaultValue={detail?.notes}
+                placeholder="Insert your notes here"
+                disabled={isUpdating}
+              />
+            </Box>
+            <Button type="submit" variant="contained" fullWidth>
+              Save
+            </Button>
+          </Box>
+          {/* Subtasks */}
+          <Box
+            className="space-y-3  border border-gray-500"
+            sx={{
+              margin: '0.75rem 0',
+              py: '0.5rem',
+              px: '0.5rem',
+            }}
+          >
+            <Typography fontSize={18} fontWeight={500}>
+              Subtasks{' '}
+              <span className="text-xs lowercase font-normal ">(max 3)</span>
+            </Typography>
+            {detail?.subtasks?.length > 0 && (
+              <List component="ul" className="space-y-1 w-3/4">
+                {detail?.subtasks.map((st) => (
+                  <SubtaskTemplate st={st} key={st.id} />
+                ))}
+              </List>
+            )}
+            <SubtaskInput details={detail} />
+          </Box>
         </Box>
       </Box>
       <DeleteTask
-        openModal={deleteDialog.isOpen}
-        onCloseModal={deleteDialog.closeModal}
+        open={deleteDialog.isOpen}
+        onClose={deleteDialog.onClose}
         handler={handleDelete}
+      />
+      <SelectPriority
+        detail={detail}
+        open={priorityDialog.isOpen}
+        onClose={priorityDialog.onClose}
       />
     </>
   );

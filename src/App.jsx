@@ -1,9 +1,5 @@
 // import { Suspense ,lazy} from 'react';
-import {
-  Navigate,
-  RouterProvider,
-  createBrowserRouter,
-} from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -19,6 +15,8 @@ import Error from './ui/Error';
 import SignupForm from './features/Authentication/SignupForm';
 import LoginForm from './features/Authentication/LoginForm';
 import ProtectedRoute from './ui/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
+import PriorityPage from './pages/PriorityPage';
 
 const router = createBrowserRouter([
   {
@@ -29,9 +27,15 @@ const router = createBrowserRouter([
     ),
     errorElement: <Error />,
     children: [
+      // {
+      //   index: true,
+      //   element: <Navigate replace to="/mydaytasks" />,
+      // },
       {
         index: true,
-        element: <Navigate replace to="/mydaytasks" />,
+        element: <Dashboard />,
+        path: '/',
+        errorElement: <Error />,
       },
       {
         element: <MyDayPage />,
@@ -46,13 +50,13 @@ const router = createBrowserRouter([
         path: '/alltasks',
       },
       {
-        element: <Dashboard />,
-        path: '/dashboard',
+        element: <ListsPage />,
+        path: '/mylist/:list',
         errorElement: <Error />,
       },
       {
-        element: <ListsPage />,
-        path: '/mylist/:list',
+        element: <PriorityPage />,
+        path: '/priority/:priorityTag',
         errorElement: <Error />,
       },
     ],
@@ -79,6 +83,22 @@ function App() {
       <ReactQueryDevtools initialIsOpen={false} />
       <DarkModeProvider>
         <RouterProvider router={router} />
+        <Toaster
+          position="top-center"
+          gutter={12}
+          containerStyle={{ margin: '8px' }}
+          toastOptions={{
+            success: { duration: 3000 },
+            error: { duration: 5000 },
+            style: {
+              fontSize: '16px',
+              maxWidth: '500px',
+              padding: '16px 24px',
+              border: '1px solid #000',
+              color: '#000',
+            },
+          }}
+        />
       </DarkModeProvider>
     </QueryClientProvider>
   );

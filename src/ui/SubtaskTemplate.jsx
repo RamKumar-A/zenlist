@@ -61,6 +61,6 @@ function SubtaskTemplate({ st }) {
   );
 }
 
-const MotionIconButton = motion(IconButton);
+const MotionIconButton = motion.create(IconButton);
 
 export default SubtaskTemplate;

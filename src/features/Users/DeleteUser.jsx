@@ -14,10 +14,7 @@ function DeleteUser() {
   return (
     <>
       <ListItem>
-        <ListItemButton
-          sx={{ color: '#ff0000' }}
-          onClick={deleteDialog.openModal}
-        >
+        <ListItemButton sx={{ color: '#ff0000' }} onClick={deleteDialog.onOpen}>
           <ListItemIcon>
             <Avatar sx={{ bgcolor: '#ff0000', color: 'text.secondary' }}>
               <HiOutlineTrash />
@@ -28,7 +25,7 @@ function DeleteUser() {
       </ListItem>
       <DeleteUserDialog
         open={deleteDialog.isOpen}
-        handleClose={deleteDialog.closeModal}
+        handleClose={deleteDialog.onClose}
       />
     </>
   );

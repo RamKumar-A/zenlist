@@ -14,7 +14,7 @@ function ResetPassword() {
   return (
     <>
       <ListItem sx={{ width: '100%' }}>
-        <ListItemButton onClick={resetPasswordDialog.openModal}>
+        <ListItemButton onClick={resetPasswordDialog.onOpen}>
           <ListItemIcon>
             <Avatar>
               <MdOutlineLockReset />
@@ -25,7 +25,7 @@ function ResetPassword() {
       </ListItem>
       <ResetPasswordDialog
         open={resetPasswordDialog.isOpen}
-        handleClose={resetPasswordDialog.closeModal}
+        handleClose={resetPasswordDialog.onClose}
       />
     </>
   );

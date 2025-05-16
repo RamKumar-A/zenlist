@@ -8,14 +8,15 @@ import {
   Avatar,
   Grid2,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Typography,
 } from '@mui/material';
-import { useDashboardTask } from '../../context/DashboardContext';
 import { isOverdue } from '../../helpers/isOverdue';
+import { useTask } from '../Tasks/useTask';
 
 function DashboardStats() {
-  const { allTask } = useDashboardTask();
+  const { data: allTask } = useTask();
 
   const impTaskLen = allTask?.filter((task) => task.isImportant)?.length || 0;
   const finishedTaskLen =
@@ -31,61 +32,82 @@ function DashboardStats() {
     {
       title: 'Total Task',
       dataLength: allTask?.length || 0,
-      icon: <PiSigma size={25} />,
+      icon: <PiSigma />,
     },
     {
       title: 'Important',
       dataLength: impTaskLen || 0,
-      icon: <MdLabelImportantOutline size={25} />,
+      icon: <MdLabelImportantOutline />,
     },
     {
       title: 'Finished',
       dataLength: finishedTaskLen,
-      icon: <MdOutlinePlaylistAddCheck size={25} />,
+      icon: <MdOutlinePlaylistAddCheck />,
     },
     {
       title: 'Ovedue',
       dataLength: overdue,
-      icon: <MdOutlinePlaylistRemove size={25} />,
+      icon: <MdOutlinePlaylistRemove />,
     },
   ];
-
-  return allTaskData.map(({ title, icon, dataLength }) => (
-    <Grid2 key={title} size={{ mobile: 6, desktop: 3 }}>
-      <ListItem
-        sx={{
-          bgcolor: 'background.paper',
-          borderRadius: 2,
-          boxShadow: 5,
-        }}
-        className="space-x-1.5 md:space-x-3 lg:space-x-5"
-      >
-        <Avatar
-          sx={{
-            width: { mobile: '2.5rem', tablet: '3.5rem' },
-            height: { mobile: '2.5rem', tablet: '3.5rem' },
-          }}
-        >
-          {icon}
-        </Avatar>
-        <ListItemText
-          primary={
-            <Typography fontWeight={300} fontSize="0.9rem">
-              {title}
-            </Typography>
-          }
-          secondary={
-            <Typography
-              fontWeight={600}
-              fontSize={{ mobile: '1.5rem', tablet: '1.8rem' }}
-            >
-              {dataLength}
-            </Typography>
-          }
-        />
-      </ListItem>
+  return (
+    // <List sx={{ width: '100%' }}>
+    <Grid2
+      container
+      columnSpacing={{ tablet: 2, mobile: 1 }}
+      rowSpacing={1}
+      sx={{ width: '100%' }}
+    >
+      {allTaskData.map(({ title, icon, dataLength }) => (
+        <Grid2 key={title} size={{ mobile: 6, desktop: 3 }}>
+          <ListItem
+            sx={{
+              bgcolor: 'background.paper',
+              borderRadius: 2,
+              // boxShadow: 3,
+              py: { mobile: 1, tablet: 2 },
+            }}
+            className="sm:space-x-1.5 md:space-x-3 lg:space-x-5  max-sm:flex-col max-sm:items-center "
+          >
+            <ListItemIcon sx={{ fontSize: 16 }}>
+              <Avatar
+                sx={{
+                  color: 'text.primary',
+                  bgcolor: 'secondary.light',
+                }}
+              >
+                {icon}
+              </Avatar>
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                <>
+                  <Typography
+                    fontWeight={600}
+                    fontSize={{ mobile: '1.5rem', tablet: 20 }}
+                    component="span"
+                  >
+                    {dataLength}
+                    {'  '}
+                    <Typography
+                      fontSize={16.5}
+                      component="span"
+                      className="opacity-50"
+                    >
+                      {title}
+                    </Typography>
+                  </Typography>
+                </>
+              }
+              // secondary={
+              // }
+            />
+          </ListItem>
+        </Grid2>
+      ))}
     </Grid2>
-  ));
+    // </List>
+  );
 }
 
 export default DashboardStats;

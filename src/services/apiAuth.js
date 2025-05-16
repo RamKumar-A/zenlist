@@ -63,9 +63,26 @@ export async function logout() {
   sessionStorage.removeItem('supabaseSession');
 }
 
-export async function updateCurrentUser({ password, fullName }) {
+export async function updateCurrentUser({
+  password,
+  fullName,
+  email,
+  oldPassword,
+}) {
   let updateData;
-  if (password) updateData = { password };
+  if (password) {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password: oldPassword,
+    });
+
+    if (error) {
+      // Current password is incorrect
+      console.error('Invalid current password');
+      throw new Error('Invalid current password');
+    }
+    updateData = { password };
+  }
   if (fullName) updateData = { data: { fullName } };
 
   const { data, error } = await supabase.auth.updateUser(updateData);

@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import User from '../features/Users/User';
-import { HiHashtag, HiOutlineCalendarDays } from 'react-icons/hi2';
+import { HiOutlineCalendarDays } from 'react-icons/hi2';
 import Mylist from '../features/Lists/Mylist';
 
 import { FaTasks } from 'react-icons/fa';
-import { MdOutlineDashboard } from 'react-icons/md';
+import { MdLabelImportantOutline, MdOutlineDashboard } from 'react-icons/md';
 import {
   Avatar,
   Box,
@@ -16,16 +16,27 @@ import {
   Typography,
 } from '@mui/material';
 import { useTask } from '../features/Tasks/useTask';
+import PriorityNav from '../features/Tasks/PriorityNav';
+import { isOverdue } from '../helpers/isOverdue';
 
 function SideBarElements() {
   const { data: tasks } = useTask();
 
   const importantTasks = tasks?.filter((task) => task.isImportant);
-  const todayTasks = tasks?.filter((task) => task.isToday);
+
+  const todayTasks = tasks?.filter((task) => {
+    const overdue = isOverdue(task?.dueDate);
+    return !overdue && task?.isToday;
+  });
 
   const datas = [
     {
       to: '/',
+      text: 'Dashboard',
+      icons: <MdOutlineDashboard />,
+    },
+    {
+      to: '/mydaytasks',
       text: 'My Day',
       taskLength: todayTasks,
       icons: <HiOutlineCalendarDays />,
@@ -34,7 +45,7 @@ function SideBarElements() {
       to: '/importanttasks',
       text: 'Important',
       taskLength: importantTasks,
-      icons: <HiHashtag />,
+      icons: <MdLabelImportantOutline />,
     },
     {
       to: '/alltasks',
@@ -42,21 +53,18 @@ function SideBarElements() {
       taskLength: tasks,
       icons: <FaTasks />,
     },
-    {
-      to: '/dashboard?task=today',
-      text: 'Dashboard',
-      icons: <MdOutlineDashboard />,
-    },
   ];
 
   return (
     <Box sx={{ px: { mobile: 1, tablet: 0 } }}>
       <User />
-
+      <Divider />
       <List component="nav" sx={{ width: '100%' }}>
         {datas?.map((item) => (
           <ListItems items={item} key={item.text} />
         ))}
+        <Divider />
+        <PriorityNav />
         <Divider />
         <Mylist />
       </List>

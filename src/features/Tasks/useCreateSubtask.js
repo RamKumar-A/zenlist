@@ -5,7 +5,7 @@ export function useCreateSubtask() {
   const queryClient = useQueryClient();
 
   const { mutate: addSubtask, isPending: isAddingSubtask } = useMutation({
-    mutationFn: (data) => addSubtaskApi(data),
+    mutationFn: addSubtaskApi,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['tasks'],

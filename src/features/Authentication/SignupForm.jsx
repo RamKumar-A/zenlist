@@ -80,11 +80,7 @@ function SignupForm() {
         className="space-y-5 p-5"
       >
         <Box className="w-full flex items-center justify-start">
-          <img
-            src="../../android-chrome-512x512.png"
-            alt="Logo"
-            className="w-12 rounded"
-          />
+          <img src="/logo.png" alt="Logo" className="w-12 rounded" />
         </Box>
         <Box sx={{ textAlign: 'left', py: 2 }}>
           <Typography

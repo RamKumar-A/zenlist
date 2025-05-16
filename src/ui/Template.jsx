@@ -1,21 +1,14 @@
-import { IconButton, List, Modal, Paper, Stack } from '@mui/material';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Box, IconButton, List, Modal, Paper, Stack } from '@mui/material';
+import { AnimatePresence, motion } from 'framer-motion';
 import { HiXMark } from 'react-icons/hi2';
 import { useModal } from '../hooks/useModal';
 
 import TaskDetails from '../features/Tasks/TaskDetails';
-import TaskAddInput from './TaskAddInput';
 import EmptyTasks from './EmptyTasks';
+import TaskAddInput from './TaskAddInput';
 import TaskItems from './TaskItems';
 
-function Template({
-  isAllTask,
-  isImpTask,
-  isTodayTask,
-  tasks,
-  handleDetails,
-  details,
-}) {
+function Template({ isAllTask, isImpTask, isTodayTask, tasks, priority }) {
   const detailModal = useModal();
 
   return (
@@ -51,12 +44,11 @@ function Template({
           className="space-y-2"
         >
           <AnimatePresence initial={false}>
-            {tasks?.map((list, i) => (
+            {tasks?.map((task, i) => (
               <TaskItems
-                list={list}
-                handleDetails={handleDetails}
-                key={`${list?.id}`}
-                openModal={detailModal.openModal}
+                task={task}
+                key={`${task?.id}`}
+                openModal={detailModal.onOpen}
               />
             ))}
           </AnimatePresence>
@@ -78,6 +70,7 @@ function Template({
           <TaskAddInput
             isToday={isTodayTask || isAllTask}
             important={isImpTask}
+            priority={priority}
           />
         </Paper>
       </Paper>
@@ -93,34 +86,39 @@ function Template({
             transition={{ duration: 0.2 }}
             sx={{ borderRadius: 2 }}
           >
-            <TaskDetails details={details || {}} />
+            <TaskDetails />
           </MotionPaper>
         )}
       </AnimatePresence>
 
       <Modal
-        className={(isTodayTask ? '' : 'xl:hidden') + ' relative'}
+        className={
+          (isTodayTask ? '' : 'xl:hidden') + ' flex items-center justify-center'
+        }
         open={detailModal.isOpen}
-        onClose={detailModal.closeModal}
+        onClose={detailModal.onClose}
       >
-        <Paper
+        <Box
           sx={{
-            position: 'absolute',
+            position: 'relative',
             width: {
               mobile: '95%',
               tablet: '65%',
               desktop: '40%',
             },
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%,-50%)',
-            borderRadius: 2,
           }}
         >
-          <TaskDetails
-            details={details || {}}
-            closeModal={detailModal.closeModal}
-          />
+          <Paper
+            variant="outlined"
+            sx={{
+              maxHeight: '90vh',
+              overflow: 'auto',
+              borderRadius: 2,
+            }}
+          >
+            <TaskDetails closeModal={detailModal.onClose} />
+          </Paper>
+
           <IconButton
             size="small"
             sx={{
@@ -129,6 +127,7 @@ function Template({
               position: 'absolute',
               top: 0,
               right: 0,
+              zIndex: '50',
               transform: {
                 mobile: 'translate(25%,-50%)',
                 desktop: 'translate(50%,-50%)',
@@ -137,16 +136,16 @@ function Template({
                 backgroundColor: 'primary.dark',
               },
             }}
-            onClick={detailModal.closeModal}
+            onClick={detailModal.onClose}
           >
             <HiXMark />
           </IconButton>
-        </Paper>
+        </Box>
       </Modal>
     </Stack>
   );
 }
 
-const MotionPaper = motion(Paper);
+const MotionPaper = motion.create(Paper);
 
 export default Template;

@@ -35,8 +35,8 @@ function GlobalReminder() {
       });
     };
 
-    // Set an interval to check reminders every 30 seconds
-    const interval = setInterval(checkReminders, 30000);
+    // Set an interval to check reminders every 20 seconds
+    const interval = setInterval(checkReminders, 20000);
 
     // Clear interval on component unmount
     return () => clearInterval(interval);
@@ -45,7 +45,7 @@ function GlobalReminder() {
   return (
     <Snackbar
       open={matchedReminder}
-      autoHideDuration={6000}
+      autoHideDuration={10000}
       onClose={() => setMatchedReminder(false)}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
     >

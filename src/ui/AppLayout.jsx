@@ -22,6 +22,8 @@ function AppLayout() {
               height: '100vh',
               p: '0.5rem',
               display: { mobile: 'none', tablet: 'block' },
+              py: 2.5,
+              px: { tablet: 1, laptop: 2 },
             }}
             component="aside"
           >

@@ -23,7 +23,7 @@ function Logout() {
       <ListItem>
         <ListItemButton
           variant="contained"
-          onClick={logoutDialog.openModal}
+          onClick={logoutDialog.onOpen}
           sx={{ width: '100%' }}
           disabled={isLoggingOut}
           disableElevation
@@ -36,15 +36,20 @@ function Logout() {
           <ListItemText primary="Logout" />
         </ListItemButton>
       </ListItem>
-      <Dialog open={logoutDialog.isOpen} onClose={logoutDialog.closeModal}>
+      <Dialog
+        open={logoutDialog.isOpen}
+        onClose={logoutDialog.onClose}
+        maxWidth="mobile"
+        fullWidth
+      >
         <DialogTitle>Logout</DialogTitle>
-        <DialogContent>
-          <DialogContentText color="text.primary">
+        <DialogContent dividers>
+          <DialogContentText color="text.primary" fontSize={14}>
             Are you sure want to logout?
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button disableElevation onClick={logoutDialog.closeModal}>
+        <DialogActions sx={{ pt: 3 }}>
+          <Button disableElevation onClick={logoutDialog.onClose} size="small">
             Cancel
           </Button>
           <Button
@@ -53,6 +58,7 @@ function Logout() {
             disabled={isLoggingOut}
             disableElevation
             color="error"
+            size="small"
           >
             Logout
           </Button>

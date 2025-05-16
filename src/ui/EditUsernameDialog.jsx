@@ -8,16 +8,17 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useUpdateUser } from '../features/Authentication/useUpdateUser';
+import { useUser } from '../features/Authentication/useUser';
 
 function EditUsernameDialog({ handleClose, open }) {
   const { isUpdating, updateUser } = useUpdateUser();
+  const { user } = useUser();
   const [value, setValue] = useState('');
   function handleSubmit(e) {
     e.preventDefault();
     updateUser({ fullName: value });
     handleClose();
   }
-
   return (
     <Dialog
       open={open}
@@ -27,15 +28,16 @@ function EditUsernameDialog({ handleClose, open }) {
         onSubmit: handleSubmit,
       }}
       fullWidth={true}
-      maxWidth="tablet"
+      maxWidth="mobile"
     >
       <DialogTitle>Edit User Name</DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <TextField
           margin="dense"
           label="User Name"
-          value={value}
-          size="large"
+          // value={value}
+          defaultValue={user.user_metadata?.fullName}
+          size="small"
           fullWidth
           onChange={(e) => setValue(e.target.value)}
           required
@@ -43,9 +45,11 @@ function EditUsernameDialog({ handleClose, open }) {
           autoFocus
         />
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" disableElevation type="submit">
+      <DialogActions sx={{ pt: 3 }}>
+        <Button onClick={handleClose} size="small">
+          Cancel
+        </Button>
+        <Button variant="contained" disableElevation type="submit" size="small">
           {' '}
           Save
         </Button>

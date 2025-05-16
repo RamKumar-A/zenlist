@@ -19,8 +19,7 @@ import ResetPassword from './ResetPassword';
 import DeleteUser from './DeleteUser';
 
 function AccountSettings() {
-  const editModal = useModal();
-  const [open, setOpen] = useState(false);
+  const accountSettingDialog = useModal();
   return (
     <>
       <ListItem>
@@ -28,8 +27,7 @@ function AccountSettings() {
           variant="contained"
           sx={{ width: '100%' }}
           onClick={() => {
-            editModal.openModal();
-            setOpen(true);
+            accountSettingDialog.onOpen();
           }}
           disableElevation
         >
@@ -41,7 +39,10 @@ function AccountSettings() {
           <ListItemText primary="Account Settings" />
         </ListItemButton>
       </ListItem>
-      <AccountSettingsDialog open={open} handleClose={() => setOpen(false)} />
+      <AccountSettingsDialog
+        open={accountSettingDialog.isOpen}
+        handleClose={accountSettingDialog.onClose}
+      />
     </>
   );
 }
@@ -54,7 +55,7 @@ function AccountSettingsDialog({ open, handleClose }) {
       <DialogTitle fontSize="1.5em" textAlign="center">
         Account Settings
       </DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <DialogContentText
           color="text.primary"
           textAlign="center"

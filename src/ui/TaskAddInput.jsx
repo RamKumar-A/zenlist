@@ -4,10 +4,15 @@ import { useList } from '../features/Lists/useList';
 import { useCreateTask } from '../features/Tasks/useCreateTask';
 import { useLocation } from 'react-router';
 import { useUser } from '../features/Authentication/useUser';
+import { endOfDay } from 'date-fns';
 
 // const TIME_TO_ADD = 4 * 60 * 60 * 1000;
 
-function TaskAddInput({ isToday = false, important = false }) {
+function TaskAddInput({
+  isToday = false,
+  important = false,
+  priority = 'low',
+}) {
   const location = useLocation();
   const { user } = useUser();
   const { addTask } = useCreateTask();
@@ -24,11 +29,10 @@ function TaskAddInput({ isToday = false, important = false }) {
     currentDate.setMinutes(currentDate.getMinutes() + 5);
     return new Date(currentDate);
   }
-
   function addDueDate() {
     let currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + 1);
-    return isToday ? new Date() : new Date(currentDate);
+    return isToday ? endOfDay(new Date()) : endOfDay(new Date(currentDate));
   }
 
   function handleSubmit(e) {
@@ -46,6 +50,7 @@ function TaskAddInput({ isToday = false, important = false }) {
         isReminder: true,
         notes: '',
         userId: user.id,
+        priority: priority,
       },
       {
         onSuccess: setTaskAdded(true),

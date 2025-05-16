@@ -11,7 +11,7 @@ function Section({ children, title, isMyDay }) {
         width: '100%',
         height: '100%',
         position: 'relative',
-        py: { mobile: 1, laptop: 0 },
+        py: { mobile: 1, laptop: 1.5 },
       }}
       spacing={1.5}
     >
@@ -43,10 +43,13 @@ function Section({ children, title, isMyDay }) {
           textAlign={'left'}
           fontSize={{ mobile: 24, tablet: 26 }}
           fontWeight={600}
+          textTransform="capitalize"
         >
           {title}
         </Typography>
-        <SidebarModal />
+        <Box>
+          <SidebarModal />
+        </Box>
       </Box>
 
       <Box

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { FaRegRectangleList } from 'react-icons/fa6';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Avatar,
@@ -13,22 +12,20 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import { HiChevronRight, HiPlus } from 'react-icons/hi2';
+import { HiChevronRight, HiHashtag } from 'react-icons/hi2';
 
-import { useModal } from '../../hooks/useModal';
-import { useList } from './useList';
-import { useTask } from '../Tasks/useTask';
-import CreateListDialog from './CreateListDialog';
+import { useTask } from './useTask';
 
-function Mylist() {
-  const [toggleList, setToggleList] = useState(false);
+const navDatas = ['Low', 'Medium', 'High'];
 
-  const listDialog = useModal();
+function PriorityNav() {
+  const [togglePriority, setTogglePriority] = useState(false);
 
-  const { lists } = useList();
   const { data } = useTask();
-  function getLength(listId) {
-    const tasksLength = data?.filter((d) => d.listId === listId)?.length;
+  function getLength(priority) {
+    const tasksLength = data?.filter(
+      (d) => d.priority === priority?.toLowerCase()
+    )?.length;
     return tasksLength;
   }
 
@@ -37,49 +34,28 @@ function Mylist() {
       <ListItem disablePadding sx={{ px: 1, py: 1, my: 1 }}>
         <ListItemIcon sx={{ fontSize: 16, width: 'fit-content' }}>
           <Avatar sx={{ color: 'text.primary', bgcolor: 'secondary.light' }}>
-            <FaRegRectangleList size={18} />
+            <HiHashtag size={18} />
           </Avatar>
         </ListItemIcon>
-        <ListItemText primary={<Typography>My List</Typography>} />
-        {toggleList ? (
-          <IconButton
-            size="small"
-            sx={{
-              mx: 0.5,
-            }}
-            onClick={listDialog.onOpen}
-          >
-            <HiPlus size={16} />
-          </IconButton>
-        ) : (
-          <Typography
-            sx={{ px: 1.5 }}
-            fontWeight={700}
-            variant="span"
-            fontSize={10}
-            className=""
-          >
-            {lists?.length}
-          </Typography>
-        )}
+        <ListItemText primary={<Typography>Priorities</Typography>} />
+
         <IconButton
           size="small"
           sx={{}}
-          onClick={() => setToggleList(!toggleList)}
+          onClick={() => setTogglePriority(!togglePriority)}
         >
           <HiChevronRight
             size={18}
             className={`${
-              toggleList ? 'rotate-90' : 'rotate-0'
+              togglePriority ? 'rotate-90' : 'rotate-0'
             } transition-transform duration-200`}
           />
         </IconButton>
       </ListItem>
-      <CreateListDialog open={listDialog.isOpen} onClose={listDialog.onClose} />
 
-      <Collapse in={toggleList}>
+      <Collapse in={togglePriority}>
         <AnimatePresence>
-          {toggleList && (
+          {togglePriority && (
             <List sx={{ width: '100%', px: 2 }}>
               <motion.div
                 className="pb-5 px-2 overflow-x-hidden"
@@ -88,22 +64,19 @@ function Mylist() {
                 animate="animate"
                 exit="hidden"
               >
-                {lists.map((list, i) => (
+                {navDatas.map((priority, i) => (
                   <motion.div
                     className="line-clamp-1 "
                     variants={childVariants}
-                    key={i + list?.name}
+                    key={i + priority}
                   >
-                    <NavLink
-                      to={`/mylist/${list?.name}`}
-                      state={{ listName: list?.name, listId: list?.id }}
-                    >
+                    <NavLink to={`/priority/${priority}`}>
                       <ListItem disablePadding sx={{ px: 1, py: 1, my: 1 }}>
                         <ListItemText
-                          primary={<Typography>{list?.name}</Typography>}
+                          primary={<Typography>{priority}</Typography>}
                         />
                         <Typography sx={{ whiteSpace: 'nowrap' }} fontSize={10}>
-                          {getLength(list?.id)}
+                          {getLength(priority)}
                         </Typography>
                       </ListItem>
                     </NavLink>
@@ -141,4 +114,4 @@ const childVariants = {
   hidden: { opacity: 0, scale: 0.5 },
 };
 
-export default Mylist;
+export default PriorityNav;

@@ -17,7 +17,7 @@ import {
 import { MdOutlineInvertColors } from 'react-icons/md';
 
 function Theme() {
-  const themeModal = useModal();
+  const themeDialog = useModal();
   const { mode, setTheme } = useDarkMode();
   const [radioValue, setRadioValue] = useState(mode);
 
@@ -26,7 +26,7 @@ function Theme() {
       <ListItem>
         <ListItemButton
           variant="contained"
-          onClick={themeModal.openModal}
+          onClick={themeDialog.onOpen}
           sx={{ width: '100%' }}
           disableElevation
         >
@@ -38,7 +38,7 @@ function Theme() {
           <ListItemText primary="Theme" />
         </ListItemButton>
       </ListItem>
-      <Dialog open={themeModal.isOpen} onClose={themeModal.closeModal}>
+      <Dialog open={themeDialog.isOpen} onClose={themeDialog.onClose}>
         <DialogTitle>Select Theme</DialogTitle>
         <DialogContent dividers>
           <RadioGroup

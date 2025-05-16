@@ -37,12 +37,12 @@ function User() {
           {username}
         </Typography>
       </Tooltip>
-      <IconButton sx={{ color: 'text.primary' }} onClick={mainModal.openModal}>
+      <IconButton sx={{ color: 'text.primary' }} onClick={mainModal.onOpen}>
         <HiOutlineCog8Tooth size={30} />
       </IconButton>
       <Dialog
         open={mainModal.isOpen}
-        onClose={mainModal.closeModal}
+        onClose={mainModal.onClose}
         fullWidth
         maxWidth="mobile"
       >

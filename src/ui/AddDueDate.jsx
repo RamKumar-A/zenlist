@@ -1,31 +1,11 @@
-import { useState } from 'react';
-
-import { Box, Button, Stack, Typography } from '@mui/material';
-import { useUpdateTask } from '../features/Tasks/useUpdateTask';
-import { addDays } from 'date-fns';
+import { Stack } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-function AddDueDate({ details }) {
-  const { id, dueDate } = details || {};
-  const { updateTask, isUpdating, isToday } = useUpdateTask();
-  const [selectedDate, setSelectedDate] = useState(addDays(new Date(), 1));
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    updateTask({
-      id: id,
-      updates: { dueDate: selectedDate },
-    });
-  }
+function AddDueDate({ details, isUpdating, isToday, setSelectedDate }) {
+  const { dueDate } = details || {};
 
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      spacing={3}
-      component="form"
-      onSubmit={handleSubmit}
-    >
+    <Stack direction="row" alignItems="center" spacing={3}>
       <DateTimePicker
         onChange={(date) => setSelectedDate(date)}
         value={new Date(dueDate)}
@@ -41,23 +21,8 @@ function AddDueDate({ details }) {
           },
         }}
         disabled={isUpdating || isToday}
+        disablePast
       />
-      <Box>
-        <Button
-          size="small"
-          variant="contained"
-          type="submit"
-          disabled={isUpdating || isToday}
-        >
-          <Typography
-            whiteSpace="nowrap"
-            textTransform={'capitalize'}
-            fontSize={{ mobile: 12, tablet: 14 }}
-          >
-            Add dew Date
-          </Typography>
-        </Button>
-      </Box>
     </Stack>
   );
 }
